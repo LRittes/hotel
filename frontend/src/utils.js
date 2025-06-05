@@ -97,3 +97,26 @@ export const roomData = [
     showOnMapLink: true,
   },
 ];
+
+export const hotelFeatures = [
+  "Piscina aquecida",
+  "Academia completa",
+  "Café da manhã incluso",
+  "Estacionamento gratuito",
+  "Wi-Fi de alta velocidade",
+  "Serviço de quarto 24h",
+  "Restaurante no local",
+  "Bar/lounge",
+  "Spa e centro de bem-estar",
+  "Salas de reunião/eventos",
+  "Lavanderia self-service",
+  "Translado para o aeroporto",
+  "Clube infantil",
+  "Acesso para cadeirantes",
+  "Concierge 24h",
+  "Cofre no quarto",
+  "Mini bar",
+  "TV de tela plana com canais a cabo",
+  "Ar condicionado",
+  "Varanda privativa",
+];

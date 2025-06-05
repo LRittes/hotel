@@ -42,7 +42,6 @@ public class ClienteController {
             ClienteDTO savedCliente = clienteService.save(clienteDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedCliente);
         } catch (RuntimeException e) {
-            // Em um cenário real, você mapearia isso para um HttpStatus.CONFLICT ou Bad Request
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
     }

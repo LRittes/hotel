@@ -1,14 +1,12 @@
-import "./App.css";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import HotelListings from "./components/Hotellisting";
-import NavHeader from "./components/NavHeader";
-import RoomInfoCard from "./components/RoomCard";
-import RoomListings from "./components/RoomListing";
-import SearchBar from "./components/SearchBar";
-import { hotelsData, roomData } from "./utils";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import HotelListings from "../../components/Hotellisting";
+import NavHeader from "../../components/NavHeader";
+import RoomListings from "../../components/RoomListing";
+import SearchBar from "../../components/SearchBar";
+import { hotelsData, roomData } from "../../utils";
 
-function App() {
+function Login() {
   return (
     <div className="flex flex-col min-h-screen w-screen">
       <Header />
@@ -32,4 +30,4 @@ function App() {
   );
 }
 
-export default App;
+export default Login;
