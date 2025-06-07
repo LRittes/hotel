@@ -1,16 +1,10 @@
-import { useEffect } from "react";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import HotelListings from "../../components/Hotellisting";
 import NavHeader from "../../components/NavHeader";
-import RoomListings from "../../components/RoomListing";
 import SearchBar from "../../components/SearchBar";
 
-import { hotelsData, roomData } from "../../utils";
-
-import api from "./../../service/api";
-
-function Home() {
+function HomePage() {
   return (
     <div className="flex flex-col min-h-screen w-screen">
       <Header />
@@ -18,8 +12,6 @@ function Home() {
       <NavHeader />
 
       <SearchBar />
-
-      <RoomListings roomsData={roomData} />
 
       <main className="container mx-auto my-12 px-4 flex-grow">
         {/* HotelListings Component renders all hotel cards  */}
@@ -34,4 +26,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default HomePage;

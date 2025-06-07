@@ -14,6 +14,7 @@ import com.lrittes.Hotel.dto.QuartoDTO;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,10 @@ public class QuartoService {
     public Optional<QuartoDTO> findById(Long id) {
         return quartoRepository.findById(id)
                 .map(this::convertToDTO);
+    }
+
+    public List<Map<String, Object>> findQuartoByHotelId(Long id) {
+        return quartoRepository.roomByHotelId(id).stream().collect(Collectors.toList());
     }
 
     public QuartoDTO save(QuartoDTO quartoDTO) {

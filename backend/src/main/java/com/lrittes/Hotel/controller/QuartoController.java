@@ -9,6 +9,7 @@ import com.lrittes.Hotel.Service.QuartoService;
 import com.lrittes.Hotel.dto.QuartoDTO;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/quartos")
@@ -20,6 +21,12 @@ public class QuartoController {
     @GetMapping
     public ResponseEntity<List<QuartoDTO>> getAllQuartos() {
         List<QuartoDTO> quartos = quartoService.findAll();
+        return ResponseEntity.ok(quartos);
+    }
+
+    @GetMapping("/hid/{id}")
+    public ResponseEntity<List<Map<String, Object>>> getAllQuartosByHotelId(@PathVariable Long id) {
+        List<Map<String, Object>> quartos = quartoService.findQuartoByHotelId(id);
         return ResponseEntity.ok(quartos);
     }
 
