@@ -15,7 +15,7 @@ Clone o projeto
 Entre no diretório do projeto
 
 ```bash
-  cd my-project
+  cd hotel
 ```
 
 Rode o comando a seguir dentro da pasta "postgres+pgadmin"
