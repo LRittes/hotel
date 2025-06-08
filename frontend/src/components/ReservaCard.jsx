@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { formatDate } from "../utils";
+import { useEffect, useState, useCallback } from "react"; // Importar useCallback
 import api from "../service/api";
 
 const ReservaCard = ({
@@ -22,12 +21,11 @@ const ReservaCard = ({
   const [tipoQuarto, setTipoQuarto] = useState("");
   const [statusState, setStatusState] = useState(status);
 
-  const cancelReserva = async () => {
-    setStatusState("cancelada");
+  const handleReserva = useCallback(
+    async (newStatus) => {
+      setStatusState(newStatus);
 
-    // Erro: status não modifica
-    try {
-      await api.put(`/reservas/${id}`, {
+      const data = {
         dataReserva,
         dataCheckinPrevista,
         dataCheckoutPrevisto,
@@ -37,40 +35,61 @@ const ReservaCard = ({
         camaExtra,
         clienteId,
         valor,
-        status: statusState,
-      });
-    } catch (err) {
-      // Lida com erros da API
-      //   console.error(`Erro de ${register ? "cadastro" : "atualização"}:`, err);
-      console.log(err.response.data.message);
-      //   if (err.response && err.response.data && err.response.data.message) {
-      //   } else {
-      //     setError(
-      //       `Ocorreu um erro ao tentar ${
-      //         register ? "cadastrar" : "atualizar"
-      //       }. Tente novamente.`
-      //     );
-      //   }
-    }
-  };
+        status: newStatus,
+      };
+
+      try {
+        const response = await api.put(`/reservas/${id}`, data);
+        console.log(`Reserva ${newStatus} com sucesso:`, response.data);
+      } catch (err) {
+        console.error(
+          `Erro ao ${newStatus.slice(0, -2)}r reserva:`,
+          err.response?.data?.message || err.message
+        );
+        setStatusState(status);
+      }
+    },
+    [
+      id,
+      dataReserva,
+      dataCheckinPrevista,
+      dataCheckoutPrevisto,
+      tipoQuartoId,
+      quartoId,
+      hotelId,
+      camaExtra,
+      clienteId,
+      valor,
+      status,
+    ]
+  );
 
   useEffect(() => {
     const getLeftData = async () => {
-      const responseHotel = await api.get(`/hoteis/${hotelId}`);
-      const responseNumQuarto = await api.get(`/quartos/${quartoId}`);
-      const responsePlano = await api.get(`/tipos-quarto/${tipoQuartoId}`);
+      try {
+        const [responseHotel, responseNumQuarto, responsePlano] =
+          await Promise.all([
+            api.get(`/hoteis/${hotelId}`),
+            api.get(`/quartos/${quartoId}`),
+            api.get(`/tipos-quarto/${tipoQuartoId}`),
+          ]);
 
-      setName(responseHotel.data.nome);
-      setEndereco(responseHotel.data.endereco);
-      setNumQuarto(responseNumQuarto.data.numero);
-      setPlano(responsePlano.data.plano);
-      setTipoQuarto(responsePlano.data.tipoQuarto);
+        setName(responseHotel.data.nome);
+        setEndereco(responseHotel.data.endereco);
+        setNumQuarto(responseNumQuarto.data.numero);
+        setPlano(responsePlano.data.plano);
+        setTipoQuarto(responsePlano.data.tipoQuarto);
+      } catch (err) {
+        console.error("Erro ao buscar dados adicionais da reserva:", err);
+      }
     };
 
     getLeftData();
-  }, []);
+  }, [hotelId, quartoId, tipoQuartoId]);
 
-  console.log(statusState);
+  useEffect(() => {
+    setStatusState(status);
+  }, [status]);
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-4 border border-gray-200">
@@ -83,6 +102,8 @@ const ReservaCard = ({
                 ? "bg-green-100 text-green-800"
                 : statusState === "pendente"
                 ? "bg-yellow-100 text-yellow-800"
+                : statusState === "cancelada" // Adicionei o estilo para 'cancelada' aqui
+                ? "bg-red-100 text-red-800"
                 : "bg-gray-100 text-gray-800"
             }`}
         >
@@ -125,21 +146,46 @@ const ReservaCard = ({
           switch (statusState) {
             case "pendente":
               return (
-                <button className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-300 mr-2 cursor-pointer">
+                <button
+                  key="pagar"
+                  onClick={() => handleReserva("confirmada")}
+                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-300 mr-2 cursor-pointer"
+                >
                   Pagar
                 </button>
               );
+            case "confirmada": // Opcional: mostrar algo se confirmada
+              return (
+                <span
+                  key="confirmado"
+                  className="text-green-700 font-semibold mr-2"
+                >
+                  Reserva Confirmada
+                </span>
+              );
+            case "cancelada": // Opcional: mostrar algo se cancelada
+              return (
+                <span
+                  key="cancelado"
+                  className="text-red-700 font-semibold mr-2"
+                >
+                  Reserva Cancelada
+                </span>
+              );
             default:
+              return null; // Não renderiza nada por padrão
           }
         })()}
 
-        {/* Ver Detalhes */}
-        <button
-          onClick={cancelReserva}
-          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300 cursor-pointer"
-        >
-          Cancelar
-        </button>
+        {/* O botão "Cancelar" só aparece se o status NÃO FOR "cancelada" */}
+        {statusState !== "cancelada" && (
+          <button
+            onClick={() => handleReserva("cancelada")}
+            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300 cursor-pointer"
+          >
+            Cancelar
+          </button>
+        )}
       </div>
     </div>
   );

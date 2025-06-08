@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = ({ onClick }) => {
   const { logout } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -10,6 +10,7 @@ const Sidebar = () => {
     logout();
     navigate("/");
   };
+
   return (
     <div className="w-64 bg-white h-screen shadow-md p-4 flex flex-col">
       <nav className="flex-1">
@@ -17,8 +18,9 @@ const Sidebar = () => {
           {/* Item de navegação: Início */}
           <li>
             <a
-              href="#"
-              className="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-200 transition duration-200 font-semibold"
+              onClick={() => onClick("conta")}
+              className="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-200 transition
+              cursor-pointer duration-200 font-semibold"
             >
               {/* Ícone de casa (Font Awesome) */}
               <i className="fas fa-home text-xl mr-4"></i>
@@ -28,8 +30,9 @@ const Sidebar = () => {
           {/* Item de navegação: Suporte */}
           <li>
             <a
-              href="#"
-              className="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-200 transition duration-200 font-semibold"
+              onClick={() => onClick("reservas")}
+              className="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-200 transition
+              cursor-pointer duration-200 font-semibold"
             >
               {/* Ícone de lupa (Font Awesome - representa suporte/busca) */}
               <i className="fas fa-search text-xl mr-4"></i>

@@ -11,8 +11,6 @@ const ReservaListing = ({ reservasData }) => {
 
   return (
     <div className="space-y-6">
-      {" "}
-      {/* Espaçamento entre os cards */}
       {reservasData.map((reserva) => (
         <ReservaCard key={reserva.id} {...reserva} />
       ))}

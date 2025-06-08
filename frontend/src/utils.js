@@ -145,44 +145,34 @@ export function getFormattedCurrentDateYMD() {
   return formatDate(date);
 }
 
-export const exampleReservas = [
+export const exampleHotels = [
   {
-    id: 25,
-    dataReserva: "2025-07-14",
-    dataCheckinPrevista: "2025-11-07",
-    dataCheckoutPrevisto: "2025-11-08",
-    tipoQuartoId: 1,
-    quartoId: 1,
-    hotelId: 1,
-    camaExtra: false,
-    clienteId: 1,
-    valor: 100.0,
-    status: "confirmada",
+    id: 1,
+    nome: "TestHot3",
+    endereco: "Rua t2, 0000, Cidade2",
+    telefone: "47991231234",
+    nota: 1.0,
   },
   {
-    id: 26,
-    dataReserva: "2025-07-15",
-    dataCheckinPrevista: "2025-12-01",
-    dataCheckoutPrevisto: "2025-12-05",
-    tipoQuartoId: 2,
-    quartoId: 3,
-    hotelId: 1,
-    camaExtra: true,
-    clienteId: 2,
-    valor: 450.5,
-    status: "pendente",
+    id: 2,
+    nome: "TestHot 5",
+    endereco: "Rua t2, 0000, Cidade2",
+    telefone: "47991231234",
+    nota: 8.2,
   },
+];
+
+export const mockHotels = [
+  { id: 1, nome: "Hotel Solar", cidade: "Florianópolis", pais: "Brasil" },
+  { id: 2, nome: "Pousada do Lago", cidade: "Curitiba", pais: "Brasil" },
+  { id: 3, nome: "Resort Estrela", cidade: "São Paulo", pais: "Brasil" },
   {
-    id: 27,
-    dataReserva: "2025-07-16",
-    dataCheckinPrevista: "2026-01-10",
-    dataCheckoutPrevisto: "2026-01-12",
-    tipoQuartoId: 1,
-    quartoId: 2,
-    hotelId: 2,
-    camaExtra: false,
-    clienteId: 1,
-    valor: 220.0,
-    status: "cancelada",
+    id: 4,
+    nome: "Casa de Campo",
+    cidade: "Balneário Camboriú",
+    pais: "Brasil",
   },
+  { id: 5, nome: "Hostel Aventura", cidade: "Porto Alegre", pais: "Brasil" },
+  { id: 6, nome: "Praia Azul", cidade: "Rio de Janeiro", pais: "Brasil" },
+  { id: 7, nome: "Serra Verde", cidade: "Gramado", pais: "Brasil" },
 ];

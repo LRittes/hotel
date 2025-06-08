@@ -8,7 +8,7 @@ import api from "../../service/api";
 
 // Componente App para demonstrar a Sidebar
 const ConfigPage = () => {
-  const [currentPage, setcurrentPage] = useState(null);
+  const [currentPage, setcurrentPage] = useState("conta");
   const [reservas, setReservas] = useState([]);
 
   useEffect(() => {
@@ -20,24 +20,29 @@ const ConfigPage = () => {
     getReservars();
   }, []);
 
+  const goTo = (page) => setcurrentPage(page);
+
   return (
     <>
       <Header />
       <div className="flex bg-gray-100 min-h-screen">
         {/* A Sidebar fica à esquerda */}
-        <Sidebar />
+        <Sidebar onClick={goTo} />
 
         {/* Conteúdo principal da página */}
         <main className="flex-1 p-8">
-          {/* <RegisterPage register={false} /> */}
-          <div className="min-h-screen bg-gray-100 p-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
-              Minhas Reservas
-            </h1>
-            <div className="max-w-3xl mx-auto">
-              <ReservaListing reservasData={reservas} />
+          {currentPage == "conta" ? (
+            <RegisterPage register={false} />
+          ) : (
+            <div className="min-h-screen bg-gray-100 p-8">
+              <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+                Minhas Reservas
+              </h1>
+              <div className="max-w-3xl mx-auto">
+                <ReservaListing reservasData={reservas} />
+              </div>
             </div>
-          </div>
+          )}
         </main>
       </div>
     </>
