@@ -6,6 +6,8 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 
 import Home from "./pages/Home";
 import RoomPage from "./pages/Room";
+import { UserProvider } from "./context/UserContext";
+import LoginPage from "./pages/Login";
 
 let router = createBrowserRouter([
   {
@@ -17,10 +19,16 @@ let router = createBrowserRouter([
     path: "/room/:id",
     Component: RoomPage,
   },
+  {
+    path: "/login",
+    Component: LoginPage,
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
   </StrictMode>
 );

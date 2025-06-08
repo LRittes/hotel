@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @Transactional
+@CrossOrigin(origins = "http://localhost:8082")
 @RequestMapping("/api/servicos-estadia")
 public class ServicoEstadiaController {
 

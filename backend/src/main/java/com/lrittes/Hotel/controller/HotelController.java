@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8082")
 @RequestMapping("/api/hoteis")
 public class HotelController {
 

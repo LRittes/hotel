@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { formatDate } from "../utils";
+import { UserContext } from "../context/UserContext";
 
 // DateRangePicker Component
 export default function DateRangePicker({ onDateChange }) {
+  const { reservaData, reserva } = useContext(UserContext);
+  const { checkIn: contextCheckInDate, checkOut: contextCheckOutDate } =
+    reservaData;
+
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [checkInDate, setCheckInDate] = useState(null);
-  const [checkOutDate, setCheckOutDate] = useState(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const calendarRef = useRef(null);
@@ -27,15 +31,6 @@ export default function DateRangePicker({ onDateChange }) {
   ];
   const dayNames = ["Do.", "2ª", "3ª", "4ª", "5ª", "6ª", "Sa."];
 
-  // Function to format date for display
-  const formatDate = (date) => {
-    if (!date) return "";
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   // Function to render a single month calendar grid
   const renderMonthDays = (month, year) => {
     const days = [];
@@ -51,7 +46,6 @@ export default function DateRangePicker({ onDateChange }) {
       );
     }
 
-    // Fill days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const today = new Date();
@@ -64,16 +58,18 @@ export default function DateRangePicker({ onDateChange }) {
       if (date < today) {
         dayClasses += " text-gray-400 cursor-not-allowed";
       } else {
-        // Apply selection styles
+        // Apply selection styles usando as datas do CONTEXTO
         const isCheckIn =
-          checkInDate && date.toDateString() === checkInDate.toDateString();
+          contextCheckInDate &&
+          date.toDateString() === contextCheckInDate.toDateString();
         const isCheckOut =
-          checkOutDate && date.toDateString() === checkOutDate.toDateString();
+          contextCheckOutDate &&
+          date.toDateString() === contextCheckOutDate.toDateString();
         const isInRange =
-          checkInDate &&
-          checkOutDate &&
-          date > checkInDate &&
-          date < checkOutDate;
+          contextCheckInDate &&
+          contextCheckOutDate &&
+          date > contextCheckInDate &&
+          date < contextCheckOutDate;
 
         if (isCheckIn && isCheckOut) {
           dayClasses += " bg-blue-600 text-white";
@@ -103,26 +99,33 @@ export default function DateRangePicker({ onDateChange }) {
 
   // Handle date selection logic
   const handleDateSelect = (date) => {
-    if (!checkInDate || (checkInDate && checkOutDate)) {
-      // Start new selection or reset if both are already selected
-      setCheckInDate(date);
-      setCheckOutDate(null);
-    } else if (date < checkInDate) {
-      // If selected date is before check-in, make it the new check-in
-      setCheckInDate(date);
-      setCheckOutDate(null); // Clear check-out as it's now invalid
+    let newCheckIn = contextCheckInDate; // Usa a data do contexto como base
+    let newCheckOut = contextCheckOutDate; // Usa a data do contexto como base
+
+    if (!newCheckIn || (newCheckIn && newCheckOut)) {
+      // Se nenhuma data selecionada ou ambas já selecionadas, inicia nova seleção
+      newCheckIn = date;
+      newCheckOut = null;
+    } else if (date < newCheckIn) {
+      // Se a data selecionada for antes do check-in, torna-a o novo check-in
+      newCheckIn = date;
+      newCheckOut = null; // Limpa check-out, pois agora é inválido
     } else {
-      // If selected date is after or equal to check-in, set as check-out
-      setCheckOutDate(date);
-      // Optionally close calendar after selecting both dates
-      // setIsCalendarOpen(false);
+      // Se a data selecionada for igual ou depois do check-in, define como check-out
+      newCheckOut = date;
     }
+
+    // AQUI: Chama o onDateChange (que vai atualizar o contexto)
+    onDateChange(newCheckIn, newCheckOut);
+    // Não precisamos de setCheckInDate/setCheckOutDate localmente,
+    // o componente será re-renderizado quando o contexto mudar.
+    // console.log("DateRangePicker: Selecionando datas", newCheckIn, newCheckOut);
   };
 
   // Effect to call onDateChange prop when dates change
-  useEffect(() => {
-    onDateChange(checkInDate, checkOutDate);
-  }, [checkInDate, checkOutDate, onDateChange]);
+  // useEffect(() => {
+  //   onDateChange(checkInDate, checkOutDate);
+  // }, [checkInDate, checkOutDate]);
 
   // Handle month navigation
   const goToPrevMonth = () => {
@@ -168,8 +171,14 @@ export default function DateRangePicker({ onDateChange }) {
   }, [calendarRef, inputRef]);
 
   const displayValue = `${
-    checkInDate ? formatDate(checkInDate) : "Data de check-in"
-  } — ${checkOutDate ? formatDate(checkOutDate) : "Data de check-out"}`;
+    contextCheckInDate
+      ? formatDate(contextCheckInDate, "/")
+      : "Data de check-in"
+  } — ${
+    contextCheckOutDate
+      ? formatDate(contextCheckOutDate, "/")
+      : "Data de check-out"
+  }`;
 
   return (
     <div className="relative w-full md:w-1/3">

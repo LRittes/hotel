@@ -11,6 +11,7 @@ import com.lrittes.Hotel.dto.EstadiaDTO;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8082")
 @RequestMapping("/api/estadias")
 public class EstadiaController {
 

@@ -1,4 +1,19 @@
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
+
 export default function Header() {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const goToLogin = () => {
+    navigate("/login");
+  };
+
+  const goToRegister = () => {
+    navigate();
+  };
+
   return (
     <header className="bg-blue-800 text-white py-3 px-4 md:px-8">
       <div className="container mx-auto flex justify-between items-center flex-wrap">
@@ -14,18 +29,24 @@ export default function Header() {
           >
             <i className="fas fa-question-circle text-xl"></i>
           </a>
-          <a
-            href="register.html"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow-md transition duration-300 text-base font-medium"
-          >
-            Cadastre-se
-          </a>
-          <a
-            href="login.html"
-            className="bg-white text-blue-800 px-4 py-2 rounded-md shadow-md hover:bg-blue-100 transition duration-300 text-base font-medium"
-          >
-            Login
-          </a>
+          {user.email != "Convidado" ? (
+            <h3>{user.email}</h3>
+          ) : (
+            <>
+              <button
+                className="bg-white text-blue-800 px-4 py-2 rounded-md shadow-md hover:bg-blue-100 transition duration-300 text-base font-medium cursor-pointer"
+                onClick={goToRegister}
+              >
+                Cadastre-se
+              </button>
+              <button
+                className="bg-white text-blue-800 px-4 py-2 rounded-md shadow-md hover:bg-blue-100 transition duration-300 text-base font-medium cursor-pointer"
+                onClick={goToLogin}
+              >
+                Login
+              </button>
+            </>
+          )}
         </div>
       </div>
     </header>

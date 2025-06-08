@@ -1,15 +1,11 @@
+import { useContext } from "react";
 import CalendarPick from "./CalendarPick";
+import { UserContext } from "../context/UserContext";
 
 const SearchBar = () => {
+  const { reserva } = useContext(UserContext);
   const handleDateChange = (checkIn, checkOut) => {
-    console.log(
-      "Check-in Date:",
-      checkIn ? checkIn.toLocaleDateString() : "None"
-    );
-    console.log(
-      "Check-out Date:",
-      checkOut ? checkOut.toLocaleDateString() : "None"
-    );
+    reserva(checkIn, checkOut);
   };
   return (
     <section className="bg-blue-800 text-white py-12 md:py-20 px-4 md:px-8">

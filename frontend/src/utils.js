@@ -120,3 +120,27 @@ export const hotelFeatures = [
   "Ar condicionado",
   "Varanda privativa",
 ];
+
+export function capitalizeWords(str) {
+  // Verifica se a string é válida e não está vazia
+  if (!str || typeof str !== "string") {
+    return "";
+  }
+  // Divide a string em palavras, capitaliza a primeira letra de cada uma
+  // e junta as palavras de volta
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+// Function to format date for display
+export const formatDate = (date, sep = "-") => {
+  if (!date) return "";
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const year = date.getFullYear();
+  return `${year}${sep}${month}${sep}${day}`.toString();
+};
+
+export function getFormattedCurrentDateYMD() {
+  const date = new Date();
+  return formatDate(date);
+}

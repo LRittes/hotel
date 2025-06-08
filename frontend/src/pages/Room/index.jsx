@@ -10,6 +10,7 @@ import api from "../../service/api";
 
 function RoomPage() {
   const { id } = useParams();
+
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 

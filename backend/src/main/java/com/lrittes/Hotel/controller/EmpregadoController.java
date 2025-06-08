@@ -11,6 +11,7 @@ import com.lrittes.Hotel.dto.EmpregadoDTO;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8082")
 @RequestMapping("/api/empregados")
 public class EmpregadoController {
 

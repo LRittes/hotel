@@ -10,9 +10,11 @@ import com.lrittes.Hotel.dto.ReservaDTO;
 import com.lrittes.Hotel.exception.reserva.DataCheckinBeforeCheckoutException;
 import com.lrittes.Hotel.exception.reserva.SameDataReservaException;
 
+
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8082")
 @RequestMapping("/api/reservas")
 public class ReservaController {
 

@@ -2,6 +2,7 @@ package com.lrittes.Hotel.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lrittes.Hotel.Model.Cliente;
 import com.lrittes.Hotel.Repository.ClienteRepository;
@@ -33,10 +34,10 @@ public class ClienteService {
                 .orElseThrow(() -> new ClienteNotFoundException("Cliente com ID " + id + " não encontrado!"));
     }
 
-    public ClienteDTO login(ClienteLoginDTO clienteLoginDTO) {
-        return clienteRepository.login(clienteLoginDTO.getEmail(),clienteLoginDTO.getPassword())
+    public ClienteDTO login(String email, String password) {
+        return clienteRepository.login(email,password)
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new ClienteNotFoundException("Cliente com Email " + clienteLoginDTO.getEmail() + " não encontrado!"));
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente com Email " + email + " não encontrado!"));
     }
 
     public ClienteDTO save(ClienteDTO clienteDTO) {

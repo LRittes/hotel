@@ -1,5 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ToggleSwitch from "./ToggleSwitch";
+import {
+  capitalizeWords,
+  formatDate,
+  getFormattedCurrentDateYMD,
+} from "../utils";
+import { UserContext } from "../context/UserContext";
+import api from "../service/api";
+import { data } from "react-router-dom";
 
 export default function RoomInfoCard({
   imageUrl,
@@ -14,16 +22,86 @@ export default function RoomInfoCard({
   id,
   tp_quarto,
 }) {
-  const [isChecked, setIsChecked] = useState(false);
+  const { reservaData } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
-  const roomName = `${tp_quarto} ${plano} ${numero} - ${andar}º andar`;
+  const [isChecked, setIsChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  let reservaDataToSave = {
+    tipoQuartoId: tipo_quarto_id,
+    quartoId: id,
+    dataReserva: getFormattedCurrentDateYMD(),
+    dataCheckinPrevista:
+      reservaData != null ? formatDate(reservaData.checkIn) : "",
+    dataCheckoutPrevisto:
+      reservaData != null ? formatDate(reservaData.checkOut) : "",
+    clienteId: null,
+    hotelId: hotel_id,
+    valor: 0,
+    camaExtra: isChecked,
+    status: "pendente",
+  };
+
+  const roomName = `${capitalizeWords(tp_quarto)} ${capitalizeWords(
+    plano
+  )} - nº ${numero} ${andar}º andar`;
+
+  const imgText = `${tp_quarto}+${plano}`;
   const beds =
     tp_quarto == "single"
       ? "1 cama de casal"
-      : "1 ou 2 camas (1 de casal + 1  de solteiro)";
+      : "1 ou 2 camas (1 de casal + 1 cama extra de solteiro)";
 
   const handleDataToggle = (data) => {
     setIsChecked(data);
+    reservaData.camaExtra = data;
+  };
+
+  const saveReservarRoom = async (e) => {
+    e.preventDefault(); // Previne o recarregamento da página
+
+    console.log(reservaDataToSave, user);
+    if (user.email == "Convidado") {
+      alert("Deve se cadastrar para reservar quartos!");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      reservaDataToSave.clienteId = user.id;
+      await api.post("/reservas", reservaDataToSave);
+      console.log("Reserva salva: ", reservaDataToSave);
+    } catch (error) {
+      // Se ocorrer um erro na requisição
+      console.error("Erro ao enviar dados (POST):", error);
+      // setMessage(
+      //   `Erro ao fazer a reserva!: ${error.message || "Erro desconhecido"}`
+      // );
+
+      if (error.response.status == 409) {
+        alert(error.response.data.message);
+      }
+      // Tratamento de erros mais específico:
+      if (error.response) {
+        // O servidor respondeu com um status de erro (ex: 400, 404, 500)
+        console.error("Dados de erro do servidor:", error.response.data);
+        console.error("Status de erro:", error.response.status);
+        // setMessage(
+        //   `Erro do servidor: ${error.response.status} - ${
+        //     error.response.data.message || "Dados inválidos"
+        //   }`
+        // );
+      } else if (error.request) {
+        // A requisição foi feita, mas nenhuma resposta foi recebida
+        console.error("Nenhuma resposta do servidor:", error.request);
+        // setMessage("Erro de rede: Nenhuma resposta do servidor.");
+      } else {
+        // Algo mais aconteceu ao configurar a requisição que disparou um erro
+        console.error("Erro na configuração da requisição:", error.message);
+      }
+    }
   };
 
   return (
@@ -32,7 +110,7 @@ export default function RoomInfoCard({
         <img
           src={
             imageUrl ||
-            "https://placehold.co/600x400/a0aec0/ffffff?text=Room+Image"
+            `https://placehold.co/600x400/a0aec0/ffffff?text=${imgText}`
           }
           alt={roomName}
           className="w-full h-full object-cover"
@@ -70,13 +148,16 @@ export default function RoomInfoCard({
             <p className="text-4xl font-bold text-gray-900">R$ {preco_noite}</p>
             {tp_quarto != "single" && (
               <ToggleSwitch
-                label="cama extra? "
+                label="cama extra ? "
                 initialChecked={isChecked}
                 onToggle={handleDataToggle}
               />
             )}
           </div>
-          <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-bold text-lg transition duration-300 cursor-pointer">
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-bold text-lg transition duration-300 cursor-pointer"
+            onClick={saveReservarRoom}
+          >
             Reservar <i className="fas fa-chevron-right ml-2"></i>
           </button>
         </div>

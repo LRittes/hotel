@@ -11,6 +11,7 @@ import com.lrittes.Hotel.dto.TipoQuartoDTO;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8082")
 @RequestMapping("/api/tipos-quarto")
 public class TipoQuartoController {
 

@@ -12,6 +12,7 @@ import com.lrittes.Hotel.dto.ClienteLoginDTO;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8082")
 @RequestMapping("/api/clientes")
 public class ClienteController {
 
@@ -31,8 +32,8 @@ public class ClienteController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<ClienteDTO> login(@RequestBody ClienteLoginDTO clienteLoginDTO) {
-        ClienteDTO cliente =  clienteService.login(clienteLoginDTO);
+    public ResponseEntity<ClienteDTO> login(@RequestParam String email, @RequestParam String password) {
+        ClienteDTO cliente =  clienteService.login(email, password);
         return ResponseEntity.ok(cliente);
     }
 
