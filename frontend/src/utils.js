@@ -144,3 +144,45 @@ export function getFormattedCurrentDateYMD() {
   const date = new Date();
   return formatDate(date);
 }
+
+export const exampleReservas = [
+  {
+    id: 25,
+    dataReserva: "2025-07-14",
+    dataCheckinPrevista: "2025-11-07",
+    dataCheckoutPrevisto: "2025-11-08",
+    tipoQuartoId: 1,
+    quartoId: 1,
+    hotelId: 1,
+    camaExtra: false,
+    clienteId: 1,
+    valor: 100.0,
+    status: "confirmada",
+  },
+  {
+    id: 26,
+    dataReserva: "2025-07-15",
+    dataCheckinPrevista: "2025-12-01",
+    dataCheckoutPrevisto: "2025-12-05",
+    tipoQuartoId: 2,
+    quartoId: 3,
+    hotelId: 1,
+    camaExtra: true,
+    clienteId: 2,
+    valor: 450.5,
+    status: "pendente",
+  },
+  {
+    id: 27,
+    dataReserva: "2025-07-16",
+    dataCheckinPrevista: "2026-01-10",
+    dataCheckoutPrevisto: "2026-01-12",
+    tipoQuartoId: 1,
+    quartoId: 2,
+    hotelId: 2,
+    camaExtra: false,
+    clienteId: 1,
+    valor: 220.0,
+    status: "cancelada",
+  },
+];

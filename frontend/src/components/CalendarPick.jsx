@@ -4,7 +4,7 @@ import { UserContext } from "../context/UserContext";
 
 // DateRangePicker Component
 export default function DateRangePicker({ onDateChange }) {
-  const { reservaData, reserva } = useContext(UserContext);
+  const { reservaData } = useContext(UserContext);
   const { checkIn: contextCheckInDate, checkOut: contextCheckOutDate } =
     reservaData;
 

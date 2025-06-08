@@ -8,6 +8,8 @@ import Home from "./pages/Home";
 import RoomPage from "./pages/Room";
 import { UserProvider } from "./context/UserContext";
 import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
+import ConfigPage from "./pages/Config";
 
 let router = createBrowserRouter([
   {
@@ -22,6 +24,14 @@ let router = createBrowserRouter([
   {
     path: "/login",
     Component: LoginPage,
+  },
+  {
+    path: "/register",
+    Component: RegisterPage,
+  },
+  {
+    path: "/config",
+    Component: ConfigPage,
   },
 ]);
 

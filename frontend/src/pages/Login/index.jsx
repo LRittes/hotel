@@ -56,6 +56,10 @@ const LoginPage = () => {
     navigate("/");
   };
 
+  const goToRegister = () => {
+    navigate("/register");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 sm:p-6 lg:p-8">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
@@ -156,7 +160,8 @@ const LoginPage = () => {
           <p className="text-sm text-gray-600">
             Não tem uma conta?{" "}
             <a
-              href="#"
+              href="/register"
+              onClick={goToRegister}
               className="font-medium text-blue-600 hover:text-blue-500 transition duration-200"
             >
               Cadastre-se

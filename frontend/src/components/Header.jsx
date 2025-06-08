@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const { user } = useContext(UserContext);
@@ -11,13 +11,24 @@ export default function Header() {
   };
 
   const goToRegister = () => {
-    navigate();
+    navigate("/register");
+  };
+
+  const goToHome = () => {
+    navigate("/");
+  };
+
+  const goToConfig = () => {
+    navigate("/config");
   };
 
   return (
     <header className="bg-blue-800 text-white py-3 px-4 md:px-8">
       <div className="container mx-auto flex justify-between items-center flex-wrap">
-        <a href="#" className="text-3xl font-bold tracking-tight">
+        <a
+          onClick={goToHome}
+          className="text-3xl font-bold tracking-tight cursor-pointer"
+        >
           FallAsleep
         </a>
 
@@ -30,7 +41,13 @@ export default function Header() {
             <i className="fas fa-question-circle text-xl"></i>
           </a>
           {user.email != "Convidado" ? (
-            <h3>{user.email}</h3>
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md font-bold 
+             transition duration-300 cursor-pointer"
+              onClick={goToConfig}
+            >
+              {user.nome}
+            </button>
           ) : (
             <>
               <button

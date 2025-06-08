@@ -1,6 +1,5 @@
 // src/contexts/UserContext.js
 import React, { createContext, useState, useCallback } from "react";
-import { formatDate } from "../utils";
 
 // 1. Cria o contexto. Pode passar um valor padrão, mas geralmente é null ou um objeto com a estrutura esperada.
 export const UserContext = createContext(null);
