@@ -1,8 +1,19 @@
-
 # Hotel
 
 Site para reservar quartos de hotel no Brasil
 
+<p align="center">
+  <img src="assets/to_git_1.png" width="45%" />
+  <img src="assets/to_git_2.png" width="45%" />
+</p>
+<p align="center">
+  <img src="assets/to_git_3.png" width="45%" />
+  <img src="assets/to_git_4.png" width="45%" />
+</p>
+<p align="center">
+  <img src="assets/to_git_5.png" width="45%" />
+  <img src="assets/to_git_6.png" width="45%" />
+</p>
 
 ## Rodando localmente
 
@@ -42,9 +53,6 @@ Inicie a aplicação web
   npm run start
 ```
 
-
 ## Autores
 
 - [@lrittes](https://www.github.com/lrittes)
-
-
