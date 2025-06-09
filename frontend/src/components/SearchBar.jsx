@@ -1,34 +1,62 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 import CalendarPick from "./CalendarPick";
 import { UserContext } from "../context/UserContext";
-import api from "../service/api";
-import { exampleHotels, mockHotels } from "../utils";
 import DestinationPicker from "./DestinoPicker";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
-  const { reserva } = useContext(UserContext);
-  const [hotels, setHotels] = useState(mockHotels);
+  const { reserva, reservaData, hotels, setFilteredHotels, resetHotelFilter } =
+    useContext(UserContext);
+  const navigate = useNavigate();
+
   const [isDestinationPickerOpen, setIsDestinationPickerOpen] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState("");
 
-  const destinationInputRef = useRef(null); // Ref para o botão/input que abre o picker
+  const destinationInputRef = useRef(null);
+
+  const handleDateChange = useCallback(
+    (checkIn, checkOut) => {
+      reserva(checkIn, checkOut);
+      console.log(
+        "SearchBar: Datas de reserva atualizadas no contexto:",
+        reservaData
+      );
+    },
+    [reserva, reservaData]
+  );
 
   const handleSelectDestination = useCallback((destination) => {
     setSelectedDestination(destination);
+    console.log("Destino selecionado:", destination);
   }, []);
 
-  const handleDateChange = (checkIn, checkOut) => {
-    reserva(checkIn, checkOut);
+  const handleSearch = () => {
+    if (selectedDestination) {
+      const filtered = hotels.all.filter((hotel) => {
+        const hotelCity = hotel.endereco.split(",")[2]?.trim();
+        return (
+          hotelCity &&
+          hotelCity.toLowerCase().includes(selectedDestination.toLowerCase())
+        );
+      });
+      setFilteredHotels(filtered);
+      console.log(
+        "Filtrando hotéis por:",
+        selectedDestination,
+        "Resultado:",
+        filtered
+      );
+    } else {
+      resetHotelFilter();
+      console.log("Nenhum destino selecionado, mostrando todos os hotéis.");
+    }
+    navigate("/");
   };
 
-  // useEffect(() => {
-  //   const getHotels = async () => {
-  //     const response = await api.get("/hoteis");
-  //     setHotels(response.data);
-  //   };
-
-  //   getHotels();
-  // }, []);
+  const clearInput = () => {
+    setSelectedDestination("");
+    setIsDestinationPickerOpen(false);
+  };
 
   return (
     <section className="bg-blue-800 text-white py-12 md:py-20 px-4 md:px-8">
@@ -41,44 +69,59 @@ const SearchBar = () => {
         </p>
 
         <div
-          className="bg-yellow-500 border-4 border-yellow-500 rounded-lg p-2 flex flex-col md:flex-row 
-        items-center justify-between space-y-4 md:space-y-0 md:space-x-4"
+          className="bg-yellow-500 border-4 border-yellow-500 
+        rounded-lg p-2 flex flex-col md:flex-row items-center
+         justify-between space-y-4 md:space-y-0 md:space-x-4 relative"
         >
-          {/* <div className="flex items-start bg-white rounded-md p-3 w-full md:w-1/2">
-            <i className="fas fa-bed text-gray-500 mr-3 text-xl"></i>
-            <button className="flex-grow outline-none text-lg text-gray-800 cursor-pointer text-start">
-              Para onde você vai?
-            </button>
-          </div> */}
           <div
-            className="flex items-center w-1/2 bg-gray-50 rounded-md p-3 border border-gray-300 cursor-pointer relative"
-            onClick={() => setIsDestinationPickerOpen(!isDestinationPickerOpen)}
+            className="flex items-center bg-white rounded-md 
+            p-3 w-full md:w-1/2 cursor-pointer relative"
             ref={destinationInputRef}
           >
             <i className="fas fa-bed text-gray-500 mr-3 text-xl"></i>
             <input
               type="text"
               placeholder="Para onde você vai?"
-              className="flex-grow outline-none text-lg text-gray-800 cursor-pointer bg-transparent"
+              className="flex-grow outline-none text-lg text-gray-800 cursor-pointer"
               value={selectedDestination}
+              onClick={() =>
+                setIsDestinationPickerOpen(!isDestinationPickerOpen)
+              }
               readOnly
             />
             {isDestinationPickerOpen && (
               <DestinationPicker
-                hotels={exampleHotels}
+                hotels={hotels.all}
                 onSelectDestination={handleSelectDestination}
                 onClose={() => setIsDestinationPickerOpen(false)}
               />
             )}
+            <button onClick={clearInput}>
+              <i className="fas fa-close text-gray-500 mr-3 text-xl cursor-pointer"></i>
+            </button>
           </div>
-          <div className="flex items-center bg-white rounded-md p-1/2 w-full md:w-1/2">
+
+          <div className="flex items-center bg-white rounded-md p-1/2 w-full md:w-1/2 ">
             <CalendarPick onDateChange={handleDateChange} />
           </div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md font-bold text-lg w-full md:w-auto transition duration-300">
+
+          <button
+            onClick={handleSearch}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md font-bold text-lg 
+            dw-full md:w-auto transition duration-300 cursor-pointer"
+          >
             Pesquisar
           </button>
         </div>
       </div>
+      {selectedDestination && (
+        <div className="container mx-auto mt-8 p-4 bg-blue-50 text-blue-800 rounded-lg">
+          <p>
+            Destino selecionado para busca:{" "}
+            <span className="font-semibold">{selectedDestination}</span>
+          </p>
+        </div>
+      )}
     </section>
   );
 };

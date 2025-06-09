@@ -1,23 +1,28 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Header from "../../components/Header";
 import Sidebar from "../../components/SideBar";
 import RegisterPage from "../Register";
 import ReservaListing from "../../components/ReservaListing";
-import { exampleReservas } from "../../utils";
 import api from "../../service/api";
+import { UserContext } from "../../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
-// Componente App para demonstrar a Sidebar
 const ConfigPage = () => {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
   const [currentPage, setcurrentPage] = useState("conta");
   const [reservas, setReservas] = useState([]);
 
-  useEffect(() => {
-    const getReservars = async () => {
-      const response = await api.get("/reservas");
-      setReservas(response.data);
-    };
+  const getReservasByClienteId = async (id) => {
+    let response = await api.get(`/reservas/cr`, { params: { id: id } });
+    setReservas(response.data);
+  };
 
-    getReservars();
+  useEffect(() => {
+    if (user.email == "Convidado") {
+      navigate("/");
+    }
+    getReservasByClienteId(user.id);
   }, []);
 
   const goTo = (page) => setcurrentPage(page);
@@ -26,10 +31,8 @@ const ConfigPage = () => {
     <>
       <Header />
       <div className="flex bg-gray-100 min-h-screen">
-        {/* A Sidebar fica à esquerda */}
         <Sidebar onClick={goTo} />
 
-        {/* Conteúdo principal da página */}
         <main className="flex-1 p-8">
           {currentPage == "conta" ? (
             <RegisterPage register={false} />

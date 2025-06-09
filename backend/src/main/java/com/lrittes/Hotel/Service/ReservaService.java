@@ -54,6 +54,10 @@ public class ReservaService {
         return reservaRepository.findById(id)
                 .map(this::convertToDTO);
     }
+
+    public List<ReservaDTO> getReservasByClienteId(Long id) {
+        return reservaRepository.getReservasByClienteId(id).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
     
     public ReservaDTO save(ReservaDTO reservaDTO) {
         Reserva reserva = convertToEntity(reservaDTO);
@@ -133,6 +137,7 @@ public class ReservaService {
                 reserva.getCamaExtra(),
                 reserva.getCliente().getId(),
                 reserva.getValor(),
+                reserva.getValor_servicos_extra(),
                 reserva.getStatus()
         );
     }
@@ -145,6 +150,7 @@ public class ReservaService {
         reserva.setDataCheckoutPrevisto(reservaDTO.getDataCheckoutPrevisto());
         reserva.setCamaExtra(reservaDTO.getCamaExtra());
         reserva.setValor(reservaDTO.getValor());
+        reserva.setValor_servicos_extra(reservaDTO.getValor_servicos_extra());
         reserva.setStatus(reservaDTO.getStatus());
 
         Cliente cliente = clienteRepository.findById(reservaDTO.getClienteId())

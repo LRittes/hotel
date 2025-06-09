@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.lrittes.Hotel.Service.ClienteService;
 import com.lrittes.Hotel.dto.ClienteDTO;
-import com.lrittes.Hotel.dto.ClienteLoginDTO;
 
 import java.util.List;
 

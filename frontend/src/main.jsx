@@ -15,7 +15,6 @@ let router = createBrowserRouter([
   {
     path: "/",
     Component: Home,
-    // loader: loadRootData,
   },
   {
     path: "/room/:id",

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react"; // Importar useCallback
+import { useEffect, useState, useCallback } from "react";
 import api from "../service/api";
 
 const ReservaCard = ({
@@ -14,15 +14,15 @@ const ReservaCard = ({
   valor,
   status,
 }) => {
-  const [hotelName, setName] = useState("");
-  const [endereco, setEndereco] = useState("");
-  const [numQuarto, setNumQuarto] = useState("");
-  const [plano, setPlano] = useState("");
-  const [tipoQuarto, setTipoQuarto] = useState("");
+  const [hotel, setHotel] = useState(null);
+  const [quarto, setQuarto] = useState(null);
+  const [tipoQuarto, setTipoQuarto] = useState(null);
   const [statusState, setStatusState] = useState(status);
+  const [isLoadingData, setIsLoadingData] = useState(true);
 
   const handleReserva = useCallback(
     async (newStatus) => {
+      const previousStatus = statusState;
       setStatusState(newStatus);
 
       const data = {
@@ -43,10 +43,12 @@ const ReservaCard = ({
         console.log(`Reserva ${newStatus} com sucesso:`, response.data);
       } catch (err) {
         console.error(
-          `Erro ao ${newStatus.slice(0, -2)}r reserva:`,
-          err.response?.data?.message || err.message
+          `Erro ao ${newStatus.slice(0, -1)}r reserva:`,
+          err.response?.data?.message ||
+            err.message ||
+            "Erro desconhecido ao atualizar reserva"
         );
-        setStatusState(status);
+        setStatusState(previousStatus);
       }
     },
     [
@@ -60,27 +62,28 @@ const ReservaCard = ({
       camaExtra,
       clienteId,
       valor,
-      status,
+      statusState,
     ]
   );
 
   useEffect(() => {
     const getLeftData = async () => {
+      setIsLoadingData(true);
       try {
-        const [responseHotel, responseNumQuarto, responsePlano] =
+        const [responseHotel, responseQuarto, responseTipoQuarto] =
           await Promise.all([
             api.get(`/hoteis/${hotelId}`),
             api.get(`/quartos/${quartoId}`),
             api.get(`/tipos-quarto/${tipoQuartoId}`),
           ]);
 
-        setName(responseHotel.data.nome);
-        setEndereco(responseHotel.data.endereco);
-        setNumQuarto(responseNumQuarto.data.numero);
-        setPlano(responsePlano.data.plano);
-        setTipoQuarto(responsePlano.data.tipoQuarto);
+        setHotel(responseHotel.data);
+        setQuarto(responseQuarto.data);
+        setTipoQuarto(responseTipoQuarto.data);
       } catch (err) {
         console.error("Erro ao buscar dados adicionais da reserva:", err);
+      } finally {
+        setIsLoadingData(false);
       }
     };
 
@@ -102,7 +105,7 @@ const ReservaCard = ({
                 ? "bg-green-100 text-green-800"
                 : statusState === "pendente"
                 ? "bg-yellow-100 text-yellow-800"
-                : statusState === "cancelada" // Adicionei o estilo para 'cancelada' aqui
+                : statusState === "cancelada"
                 ? "bg-red-100 text-red-800"
                 : "bg-gray-100 text-gray-800"
             }`}
@@ -111,35 +114,44 @@ const ReservaCard = ({
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
-        <p>
-          <strong>Data da Reserva:</strong> {dataReserva}
-        </p>
-        <p>
-          <strong>Valor Total:</strong> R$ {valor.toFixed(2).replace(".", ",")}
-        </p>{" "}
-        <p>
-          <strong>Check-in:</strong> {dataCheckinPrevista}
-        </p>
-        <p>
-          <strong>Número do Quarto:</strong> {numQuarto} (Tipo: {tipoQuarto})
-        </p>
-        <p>
-          <strong>Check-out:</strong> {dataCheckoutPrevisto}
-        </p>
-        <p>
-          <strong>Nome do Hotel:</strong> {hotelName}
-        </p>
-        <p>
-          <strong>Endereço: </strong> {endereco}
-        </p>
-        <p>
-          <strong>Plano: </strong> {plano}
-        </p>
-        <p>
-          <strong>Cama Extra:</strong> {camaExtra ? "Sim" : "Não"}
-        </p>
-      </div>
+      {isLoadingData ? (
+        <div className="text-center py-4 text-gray-500">
+          Carregando detalhes do hotel/quarto...
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+          <p>
+            <strong>Data da Reserva:</strong> {dataReserva}
+          </p>
+          <p>
+            <strong>Valor Total:</strong> R${" "}
+            {valor.toFixed(2).replace(".", ",")}
+          </p>{" "}
+          <p>
+            <strong>Check-in:</strong> {dataCheckinPrevista}
+          </p>
+          {/* Acessa propriedades APENAS se hotel, quarto, tipoQuarto não forem null */}
+          <p>
+            <strong>Número do Quarto:</strong> Andar {quarto?.andar}º - número{" "}
+            {quarto?.numero} (Tipo: {tipoQuarto?.tipoQuarto})
+          </p>
+          <p>
+            <strong>Check-out:</strong> {dataCheckoutPrevisto}
+          </p>
+          <p>
+            <strong>Nome do Hotel:</strong> {hotel?.nome}
+          </p>
+          <p>
+            <strong>Endereço: </strong> {hotel?.endereco}
+          </p>
+          <p>
+            <strong>Plano: </strong> {tipoQuarto?.plano}
+          </p>
+          <p>
+            <strong>Cama Extra:</strong> {camaExtra ? "Sim" : "Não"}
+          </p>
+        </div>
+      )}
 
       <div className="mt-6 text-right">
         {(() => {
@@ -154,7 +166,7 @@ const ReservaCard = ({
                   Pagar
                 </button>
               );
-            case "confirmada": // Opcional: mostrar algo se confirmada
+            case "confirmada":
               return (
                 <span
                   key="confirmado"
@@ -163,7 +175,7 @@ const ReservaCard = ({
                   Reserva Confirmada
                 </span>
               );
-            case "cancelada": // Opcional: mostrar algo se cancelada
+            case "cancelada":
               return (
                 <span
                   key="cancelado"
@@ -173,7 +185,7 @@ const ReservaCard = ({
                 </span>
               );
             default:
-              return null; // Não renderiza nada por padrão
+              return null;
           }
         })()}
 

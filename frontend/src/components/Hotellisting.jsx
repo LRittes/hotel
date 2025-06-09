@@ -1,21 +1,43 @@
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { UserContext } from "../context/UserContext";
 import api from "../service/api";
 import HotelInfoCard from "./HotelInfoCard";
 import { hotelFeatures } from "../utils";
 
 const HotelListings = () => {
-  var [hotels, setHotels] = useState([]);
+  const { hotels, setAllHotels } = useContext(UserContext);
+  const [currentDisplayHotels, setCurrentDisplayHotels] = useState([]);
+  const [currentDisplayFeatures, setCurrentDisplayFeatures] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate();
 
-  const getHotel = async () => {
-    setHotels((await api.get("/hoteis")).data);
-  };
+  const fetchInitialHotels = useCallback(async () => {
+    if (!hotels.firstLoadCompleted) {
+      setIsLoading(true);
+      try {
+        const response = await api.get("/hoteis");
+        setAllHotels(response.data);
+      } catch (error) {
+        console.error("Erro ao carregar hotéis iniciais:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  }, [hotels.firstLoadCompleted, setAllHotels]);
 
   useEffect(() => {
-    getHotel();
-  }, []);
+    fetchInitialHotels();
+
+    if (hotels.showAllHotels) {
+      setCurrentDisplayHotels(hotels.all);
+    } else {
+      setCurrentDisplayHotels(hotels.filtered);
+    }
+    setIsLoading(false);
+  }, [hotels.all, hotels.filtered, hotels.showAllHotels, fetchInitialHotels]);
 
   function hotelNameLogo(name) {
     return name.split("\n").join("+");
@@ -38,19 +60,21 @@ const HotelListings = () => {
 
   return (
     <div className="grid grid-cols-1 gap-8">
-      {hotels.length > 0 ? (
-        hotels.map((hotel, _) => (
+      {isLoading ? (
+        <h3 className="text-2xl font-bold text-gray-500 mb-8 text-center">
+          Loading!
+        </h3>
+      ) : currentDisplayHotels.length > 0 ? (
+        currentDisplayHotels.map((hotel, _) => (
           <HotelInfoCard
             key={hotel.id}
             hotelData={{
               id: hotel.id,
-              imageUrl: `https://placehold.co/600x400/4a5568/ffffff?text=${hotelNameLogo(
-                hotel.nome
-              )}`,
+              nameLogo: hotelNameLogo(hotel.nome),
               hotelName: hotel.nome,
-              rating: Math.floor(Math.random() * 5) + 1,
+              rating: Math.floor(hotel.nota / 2) + 1,
               type: "Hotel",
-              features: getFeatures(Math.floor(Math.random() * 7) + 3),
+              features: getFeatures(5),
               distance: (Math.random() * 15 + 0.1).toFixed(1) + " km",
               score: hotel.nota,
               reviews: Math.floor(Math.random() * 5000) + 40,

@@ -2,12 +2,10 @@ package com.lrittes.Hotel.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lrittes.Hotel.Model.Cliente;
 import com.lrittes.Hotel.Repository.ClienteRepository;
 import com.lrittes.Hotel.dto.ClienteDTO;
-import com.lrittes.Hotel.dto.ClienteLoginDTO;
 import com.lrittes.Hotel.exception.cliente.ClienteNotFoundException;
 
 import jakarta.transaction.Transactional;

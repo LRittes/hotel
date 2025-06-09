@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { formatDate } from "../utils";
 import { UserContext } from "../context/UserContext";
 
-// DateRangePicker Component
 export default function DateRangePicker({ onDateChange }) {
   const { reservaData } = useContext(UserContext);
   const { checkIn: contextCheckInDate, checkOut: contextCheckOutDate } =
@@ -31,15 +30,13 @@ export default function DateRangePicker({ onDateChange }) {
   ];
   const dayNames = ["Do.", "2ª", "3ª", "4ª", "5ª", "6ª", "Sa."];
 
-  // Function to render a single month calendar grid
   const renderMonthDays = (month, year) => {
     const days = [];
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
-    const startDayOfWeek = firstDay.getDay(); // 0 for Sunday, 1 for Monday, etc.
+    const startDayOfWeek = firstDay.getDay();
 
-    // Fill leading empty days
     for (let i = 0; i < startDayOfWeek; i++) {
       days.push(
         <div key={`empty-${month}-${i}`} className="calendar-day"></div>
@@ -49,16 +46,14 @@ export default function DateRangePicker({ onDateChange }) {
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Normalize today's date for comparison
+      today.setHours(0, 0, 0, 0);
 
       let dayClasses =
         "calendar-day p-2 rounded-lg cursor-pointer transition-colors duration-200 font-medium text-center";
 
-      // Disable past dates
       if (date < today) {
         dayClasses += " text-gray-400 cursor-not-allowed";
       } else {
-        // Apply selection styles usando as datas do CONTEXTO
         const isCheckIn =
           contextCheckInDate &&
           date.toDateString() === contextCheckInDate.toDateString();
@@ -97,37 +92,23 @@ export default function DateRangePicker({ onDateChange }) {
     return days;
   };
 
-  // Handle date selection logic
   const handleDateSelect = (date) => {
-    let newCheckIn = contextCheckInDate; // Usa a data do contexto como base
-    let newCheckOut = contextCheckOutDate; // Usa a data do contexto como base
+    let newCheckIn = contextCheckInDate;
+    let newCheckOut = contextCheckOutDate;
 
     if (!newCheckIn || (newCheckIn && newCheckOut)) {
-      // Se nenhuma data selecionada ou ambas já selecionadas, inicia nova seleção
       newCheckIn = date;
       newCheckOut = null;
     } else if (date < newCheckIn) {
-      // Se a data selecionada for antes do check-in, torna-a o novo check-in
       newCheckIn = date;
-      newCheckOut = null; // Limpa check-out, pois agora é inválido
+      newCheckOut = null;
     } else {
-      // Se a data selecionada for igual ou depois do check-in, define como check-out
       newCheckOut = date;
     }
 
-    // AQUI: Chama o onDateChange (que vai atualizar o contexto)
     onDateChange(newCheckIn, newCheckOut);
-    // Não precisamos de setCheckInDate/setCheckOutDate localmente,
-    // o componente será re-renderizado quando o contexto mudar.
-    // console.log("DateRangePicker: Selecionando datas", newCheckIn, newCheckOut);
   };
 
-  // Effect to call onDateChange prop when dates change
-  // useEffect(() => {
-  //   onDateChange(checkInDate, checkOutDate);
-  // }, [checkInDate, checkOutDate]);
-
-  // Handle month navigation
   const goToPrevMonth = () => {
     setCurrentMonth((prevMonth) => {
       if (prevMonth === 0) {
@@ -148,10 +129,8 @@ export default function DateRangePicker({ onDateChange }) {
     });
   };
 
-  // Calculate next month for the second calendar
   const nextMonthDate = new Date(currentYear, currentMonth + 1, 1);
 
-  // Close calendar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (

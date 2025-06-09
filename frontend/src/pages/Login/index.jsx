@@ -16,10 +16,10 @@ const LoginPage = () => {
   let dataLogin = { email: email, password: password };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Previne o recarregamento da página
+    e.preventDefault();
 
-    setError(""); // Limpa erros anteriores
-    setLoading(true); // Ativa o estado de carregamento
+    setError("");
+    setLoading(true);
 
     if (!email || !password) {
       setError("Por favor, preencha todos os campos.");
@@ -27,28 +27,23 @@ const LoginPage = () => {
       return;
     }
 
-    // Simulação de uma chamada de API para login
     try {
-      // Aqui você integraria sua lógica de autenticação real (ex: axios.post('/api/login', { email, password }))
       console.log("Tentando fazer login com:", { email, password, rememberMe });
       const response = (await api.get("/clientes/login", { params: dataLogin }))
         .data;
 
       if (user.name != "convidado") {
-        // Login bem-sucedido
         alert("Login bem-sucedido! Redirecionando...");
         login(response);
         gotoHome();
-        // Em uma aplicação real, você faria um navigate('/dashboard') ou algo similar
       } else {
         setError("Email ou senha inválidos.");
       }
     } catch (err) {
-      // Lida com erros da API
       console.error("Erro de login:", err);
       setError("Ocorreu um erro ao tentar fazer login. Tente novamente.");
     } finally {
-      setLoading(false); // Desativa o estado de carregamento
+      setLoading(false);
     }
   };
 

@@ -8,6 +8,7 @@ import {
 import { UserContext } from "../context/UserContext";
 import api from "../service/api";
 import { data } from "react-router-dom";
+import RoomServicesModal from "./RoomServicesModal";
 
 export default function RoomInfoCard({
   imageUrl,
@@ -26,8 +27,9 @@ export default function RoomInfoCard({
   const { user } = useContext(UserContext);
 
   const [isChecked, setIsChecked] = useState(false);
+  const [priceServices, setPriceServices] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   let reservaDataToSave = {
     tipoQuartoId: tipo_quarto_id,
@@ -40,8 +42,19 @@ export default function RoomInfoCard({
     clienteId: null,
     hotelId: hotel_id,
     valor: 0,
+    valor_servicos_extra: 0,
     camaExtra: isChecked,
     status: "pendente",
+  };
+
+  const roomData = {
+    id: id,
+    numero: numero,
+    andar: andar,
+    tipoQuarto: tp_quarto,
+    price: preco_noite,
+    description: "Quarto confortável com vista para a cidade.",
+    hotelId: hotel_id,
   };
 
   const roomName = `${capitalizeWords(tp_quarto)} ${capitalizeWords(
@@ -59,8 +72,12 @@ export default function RoomInfoCard({
     reservaData.camaExtra = data;
   };
 
+  const getPriceServices = (roomData, selectedServices, totalPrice) => {
+    setPriceServices(totalPrice);
+  };
+
   const saveReservarRoom = async (e) => {
-    e.preventDefault(); // Previne o recarregamento da página
+    e.preventDefault();
 
     console.log(reservaDataToSave, user);
     if (user.email == "Convidado") {
@@ -69,39 +86,44 @@ export default function RoomInfoCard({
       return;
     }
 
+    if (reservaData.checkIn == null || reservaData.checkOut == null) {
+      alert("Deve selecionar uma data de check-In e Check-Out!");
+      setLoading(false);
+      return;
+    }
+
     try {
       reservaDataToSave.clienteId = user.id;
+      reservaDataToSave.valor_servicos_extra = priceServices;
+
       await api.post("/reservas", reservaDataToSave);
       console.log("Reserva salva: ", reservaDataToSave);
+      alert("Reserva feita com sucesso!");
     } catch (error) {
-      // Se ocorrer um erro na requisição
       console.error("Erro ao enviar dados (POST):", error);
-      // setMessage(
-      //   `Erro ao fazer a reserva!: ${error.message || "Erro desconhecido"}`
-      // );
 
       if (error.response.status == 409) {
         alert(error.response.data.message);
       }
-      // Tratamento de erros mais específico:
+
       if (error.response) {
-        // O servidor respondeu com um status de erro (ex: 400, 404, 500)
         console.error("Dados de erro do servidor:", error.response.data);
         console.error("Status de erro:", error.response.status);
-        // setMessage(
-        //   `Erro do servidor: ${error.response.status} - ${
-        //     error.response.data.message || "Dados inválidos"
-        //   }`
-        // );
       } else if (error.request) {
-        // A requisição foi feita, mas nenhuma resposta foi recebida
         console.error("Nenhuma resposta do servidor:", error.request);
-        // setMessage("Erro de rede: Nenhuma resposta do servidor.");
       } else {
-        // Algo mais aconteceu ao configurar a requisição que disparou um erro
         console.error("Erro na configuração da requisição:", error.message);
       }
     }
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    setPriceServices(0);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -145,7 +167,9 @@ export default function RoomInfoCard({
         <div className="flex justify-between items-end mb-4">
           <div>
             <p className="text-gray-600 text-sm">diária</p>
-            <p className="text-4xl font-bold text-gray-900">R$ {preco_noite}</p>
+            <p className="text-4xl font-bold text-gray-900">
+              R$ {preco_noite + priceServices}
+            </p>
             {tp_quarto != "single" && (
               <ToggleSwitch
                 label="cama extra ? "
@@ -155,11 +179,23 @@ export default function RoomInfoCard({
             )}
           </div>
           <button
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-bold text-lg transition duration-300 cursor-pointer"
+            className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-3 rounded-md font-bold text-sm transition duration-300 cursor-pointer"
+            onClick={handleOpenModal}
+          >
+            Add Serviços <i className="fas fa-chevron-right ml-2"></i>
+          </button>
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white px-3 py-3 rounded-md font-bold text-sm transition duration-300 cursor-pointer"
             onClick={saveReservarRoom}
           >
             Reservar <i className="fas fa-chevron-right ml-2"></i>
           </button>
+          <RoomServicesModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            onConfirmReservation={getPriceServices}
+            roomData={roomData}
+          />
         </div>
       </div>
     </div>

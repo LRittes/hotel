@@ -1,33 +1,56 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const DestinationPicker = ({ onSelectDestination, onClose, hotels }) => {
+const DestinationPicker = ({
+  onSelectDestination,
+  hotelFiltered,
+  onClose,
+  hotels,
+}) => {
   const pickerRef = useRef(null);
-  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredHotels = hotels.filter((hotel) => {
-    const city = hotel.endereco.split(",")[2].trim();
-    return city.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  const getCityAndCountryFromAddress = (endereco) => {
+    const enderecoArr = endereco.split(",");
+    const city = enderecoArr[2] ? enderecoArr[2].trim() : "Cidade Desconhecida";
+    const country = enderecoArr[3]
+      ? enderecoArr[3].trim()
+      : "País Desconhecido";
+    return { city, country };
+  };
 
   const uniqueFilteredDestinations = useCallback(() => {
     const uniqueMap = new Map();
 
     hotels.forEach((hotel) => {
-      const enderecoArr = hotel.endereco.split(",");
-      const city = enderecoArr[2].trim();
-      const country = enderecoArr.length > 3 ? enderecoArr[3].trim() : "Mundo";
+      const { city, country } = getCityAndCountryFromAddress(hotel.endereco);
       const key = `${city},${country}`.toLowerCase();
 
-      if (city.toLowerCase().includes(searchTerm.toLowerCase())) {
-        if (!uniqueMap.has(key)) {
-          uniqueMap.set(key, { cidade: city, pais: country });
-        }
+      if (!uniqueMap.has(key)) {
+        uniqueMap.set(key, { cidade: city, pais: country });
       }
     });
+
     return Array.from(uniqueMap.values());
-  }, [hotels, searchTerm]);
+  }, [hotels]);
 
   const destinationsToDisplay = uniqueFilteredDestinations();
+
+  const handleChoice = useCallback(
+    (dest) => {
+      onSelectDestination(dest.cidade);
+
+      if (hotelFiltered) {
+        const filteredHotelsData = hotels.filter(
+          (hotel) =>
+            getCityAndCountryFromAddress(hotel.endereco).city.toLowerCase() ===
+            dest.cidade.toLowerCase()
+        );
+        hotelFiltered(filteredHotelsData);
+      }
+
+      onClose();
+    },
+    [onSelectDestination, hotelFiltered, hotels, onClose]
+  );
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -35,6 +58,7 @@ const DestinationPicker = ({ onSelectDestination, onClose, hotels }) => {
         onClose();
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -54,10 +78,7 @@ const DestinationPicker = ({ onSelectDestination, onClose, hotels }) => {
           <li
             key={`${dest.cidade}-${dest.pais}-${index}`}
             className="flex items-center p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition duration-200"
-            onClick={() => {
-              onSelectDestination(dest.cidade);
-              onClose();
-            }}
+            onClick={() => handleChoice(dest)}
           >
             <i className="fas fa-map-marker-alt text-gray-500 mr-3"></i>
             <div>
@@ -66,7 +87,7 @@ const DestinationPicker = ({ onSelectDestination, onClose, hotels }) => {
             </div>
           </li>
         ))}
-        {filteredHotels.length === 0 && (
+        {destinationsToDisplay.length === 0 && (
           <li className="p-3 text-gray-500 text-sm">
             Nenhum destino encontrado.
           </li>

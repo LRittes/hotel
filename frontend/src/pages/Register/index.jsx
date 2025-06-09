@@ -21,13 +21,12 @@ const RegisterPage = ({ register = true }) => {
   console.log(user);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Previne o recarregamento da página
+    e.preventDefault();
 
-    setError(""); // Limpa erros anteriores
-    setSuccessMessage(""); // Limpa mensagens de sucesso anteriores
-    setLoading(true); // Ativa o estado de carregamento
+    setError("");
+    setSuccessMessage("");
+    setLoading(true);
 
-    // Validação básica dos campos
     if (!cpf || !nome || !email || !password || !endereco || !telefone) {
       setError("Por favor, preencha todos os campos obrigatórios.");
       setLoading(false);
@@ -41,13 +40,11 @@ const RegisterPage = ({ register = true }) => {
     }
 
     if (password.length < 3) {
-      // Apenas um exemplo de validação de senha
       setError("A senha deve ter no mínimo 3 caracteres.");
       setLoading(false);
       return;
     }
 
-    // Dados a serem enviados para o servidor
     const userData = {
       cpf,
       nome,
@@ -82,7 +79,6 @@ const RegisterPage = ({ register = true }) => {
         login(response.data);
       }
     } catch (err) {
-      // Lida com erros da API
       console.error(`Erro de ${register ? "cadastro" : "atualização"}:`, err);
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
@@ -94,7 +90,7 @@ const RegisterPage = ({ register = true }) => {
         );
       }
     } finally {
-      setLoading(false); // Desativa o estado de carregamento
+      setLoading(false);
     }
   };
 
@@ -210,7 +206,7 @@ const RegisterPage = ({ register = true }) => {
               Telefone
             </label>
             <input
-              type="tel" // Tipo 'tel' para telefones
+              type="tel"
               id="telefone"
               className="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Ex: (99) 99999-9999"

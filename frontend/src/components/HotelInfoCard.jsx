@@ -3,10 +3,7 @@ const HotelInfoCard = ({ hotelData, onClick }) => {
     <div className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row w-full max-w-6xl mx-auto my-8">
       <div className="relative w-full md:w-2/5 h-64 md:h-auto overflow-hidden">
         <img
-          src={
-            hotelData.imageUrl ||
-            "https://placehold.co/600x400/a0aec0/ffffff?text=Hotel+Image"
-          }
+          src={`https://placehold.co/600x400/a0aec0/ffffff?text=${hotelData.nameLogo}`}
           alt={hotelData.hotelName}
           className="w-full h-full object-cover"
           onError={(e) => {

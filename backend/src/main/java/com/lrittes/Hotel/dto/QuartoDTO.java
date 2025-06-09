@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 public class QuartoDTO {
     private Long id;
     private Integer numero;
-    private Long hotelId; // Apenas o ID do hotel
+    private Long hotelId; 
     private Integer andar;
-    private Long tipoQuartoId; // Apenas o ID do tipo de quarto
+    private Long tipoQuartoId;
 }

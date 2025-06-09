@@ -21,7 +21,7 @@ function RoomPage() {
   };
 
   useEffect(() => {
-    getRoomsByHotelId(1);
+    getRoomsByHotelId(id);
   }, []);
 
   return (
@@ -32,7 +32,15 @@ function RoomPage() {
 
       <SearchBar />
 
-      {loading ? <h1>Loading</h1> : <RoomListings roomsData={rooms} />}
+      {loading ? (
+        <h1>Loading</h1>
+      ) : rooms.length > 0 ? (
+        <RoomListings roomsData={rooms} />
+      ) : (
+        <h3 className="text-2xl font-bold text-gray-500 mb-8 mt-10 text-center">
+          Não há Quartos para este Hotel!
+        </h3>
+      )}
 
       <Footer />
     </div>

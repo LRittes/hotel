@@ -54,6 +54,9 @@ public class Reserva {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valor;
 
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal valor_servicos_extra;
+
     @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private StatusReserva status = StatusReserva.pendente;

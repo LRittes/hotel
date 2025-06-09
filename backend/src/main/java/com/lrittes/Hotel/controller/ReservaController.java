@@ -34,6 +34,12 @@ public class ReservaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/cr")
+    public ResponseEntity<List<ReservaDTO>> getReservasByClienteId(@RequestParam Long id) {
+        List<ReservaDTO> reserva =  reservaService.getReservasByClienteId(id);
+        return ResponseEntity.ok(reserva);
+    }
+
     @PostMapping
     public ResponseEntity<?> createReserva(@RequestBody ReservaDTO reservaDTO) {
         try {

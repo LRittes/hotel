@@ -1,18 +1,20 @@
-// src/contexts/UserContext.js
 import React, { createContext, useState, useCallback } from "react";
 
-// 1. Cria o contexto. Pode passar um valor padrão, mas geralmente é null ou um objeto com a estrutura esperada.
 export const UserContext = createContext(null);
 
-// 2. Cria um componente Provider que irá envolver sua aplicação (ou parte dela)
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({ email: "Convidado", isLoggedIn: false });
   const [reservaData, setDataReserva] = useState({
-    checkIn: null, // Armazenará objetos Date ou null
-    checkOut: null, // Armazenará objetos Date ou null
+    checkIn: null,
+    checkOut: null,
+  });
+  const [hotels, setHotels] = useState({
+    all: [],
+    filtered: [],
+    firstLoadCompleted: false,
+    showAllHotels: true,
   });
 
-  // Exemplo de função que pode ser passada para atualizar o estado do usuário
   const login = useCallback((data) => {
     setUser({ ...data, isLoggedIn: true });
   }, []);
@@ -28,13 +30,41 @@ export const UserProvider = ({ children }) => {
     });
   }, []);
 
-  // O valor passado para o `value` do Provider será acessível por todos os Consumers
+  const setAllHotels = useCallback((allHotelsData) => {
+    setHotels((prevHotels) => ({
+      ...prevHotels,
+      all: allHotelsData,
+      filtered: allHotelsData,
+      firstLoadCompleted: true,
+      showAllHotels: true,
+    }));
+  }, []);
+
+  const setFilteredHotels = useCallback((filteredHotelsData) => {
+    setHotels((prevHotels) => ({
+      ...prevHotels,
+      filtered: filteredHotelsData,
+      showAllHotels: false,
+    }));
+  }, []);
+
+  const resetHotelFilter = useCallback(() => {
+    setHotels((prevHotels) => ({
+      ...prevHotels,
+      showAllHotels: true,
+    }));
+  }, []);
+
   const contextValue = {
     user,
     login,
     logout,
     reserva,
     reservaData,
+    hotels,
+    setAllHotels,
+    setFilteredHotels,
+    resetHotelFilter,
   };
 
   return (
