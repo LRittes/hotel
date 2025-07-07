@@ -1,25 +1,32 @@
 package com.lrittes.Hotel.Model;
 
 import java.math.BigDecimal;
-
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-@Entity
-@Table(name = "servico_extra")
+@Document(collection = "servicos_extra")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServicoExtra {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @NotBlank
+    @Indexed(unique = true)
+    private Long seid;
+
+    @NotBlank
     private String descricao;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @NotNull
     private BigDecimal preco;
+
+    public static final String SEQUENCE_NAME = "servEx_sequence";
 }

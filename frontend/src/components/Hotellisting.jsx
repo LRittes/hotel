@@ -67,9 +67,9 @@ const HotelListings = () => {
       ) : currentDisplayHotels.length > 0 ? (
         currentDisplayHotels.map((hotel, _) => (
           <HotelInfoCard
-            key={hotel.id}
+            key={hotel.hid}
             hotelData={{
-              id: hotel.id,
+              id: hotel.hid,
               nameLogo: hotelNameLogo(hotel.nome),
               hotelName: hotel.nome,
               rating: Math.floor(hotel.nota / 2) + 1,
@@ -81,7 +81,7 @@ const HotelListings = () => {
               totalImages: Math.floor(Math.random() * 50) + 1,
               endereco: hotel.endereco,
             }}
-            onClick={goToRoom}
+            onClick={() => goToRoom(hotel.hid, hotel)}
           />
         ))
       ) : (

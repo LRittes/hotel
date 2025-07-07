@@ -7,14 +7,12 @@ import com.lrittes.Hotel.Model.Cliente;
 import com.lrittes.Hotel.Repository.ClienteRepository;
 import com.lrittes.Hotel.dto.ClienteDTO;
 import com.lrittes.Hotel.exception.cliente.ClienteNotFoundException;
-
-import jakarta.transaction.Transactional;
+import com.lrittes.Hotel.exception.cliente.ResourceConflictException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class ClienteService {
 
     @Autowired
@@ -27,7 +25,7 @@ public class ClienteService {
     }
 
     public ClienteDTO findById(Long id) {
-        return clienteRepository.findById(id)
+        return clienteRepository.findByClienteId(id)
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new ClienteNotFoundException("Cliente com ID " + id + " não encontrado!"));
     }
@@ -39,14 +37,19 @@ public class ClienteService {
     }
 
     public ClienteDTO save(ClienteDTO clienteDTO) {
-
-        Cliente cliente = convertToEntity(clienteDTO);
-        cliente = clienteRepository.save(cliente);
-        return convertToDTO(cliente);
+        try {
+            Cliente cliente = convertToEntity(clienteDTO);
+    
+            cliente = clienteRepository.save(cliente);
+            return convertToDTO(cliente);
+            
+        } catch (Exception e) {
+            throw new ResourceConflictException(e.getMessage());
+        }
     }
 
     public ClienteDTO update(Long id, ClienteDTO clienteDTO) {
-        return clienteRepository.findById(id).map(existingCliente -> {
+        return clienteRepository.findByClienteId(id).map(existingCliente -> {
             existingCliente.setCpf(clienteDTO.getCpf());
             existingCliente.setNome(clienteDTO.getNome());
             existingCliente.setEndereco(clienteDTO.getEndereco());
@@ -56,12 +59,13 @@ public class ClienteService {
     }
 
     public void deleteById(Long id) {
-        clienteRepository.deleteById(id);
+        clienteRepository.deleteByClienteId(id);
     }
 
     private ClienteDTO convertToDTO(Cliente cliente) {
         return new ClienteDTO(
                         cliente.getId(),
+                        cliente.getClienteId(),
                         cliente.getCpf(), 
                         cliente.getNome(), 
                         cliente.getEmail(), 
@@ -73,6 +77,7 @@ public class ClienteService {
     private Cliente convertToEntity(ClienteDTO clienteDTO) {
         Cliente cliente = new Cliente();
         cliente.setId(clienteDTO.getId());
+        cliente.setClienteId(clienteDTO.getClienteId());
         cliente.setCpf(clienteDTO.getCpf());
         cliente.setNome(clienteDTO.getNome());
         cliente.setEmail(clienteDTO.getEmail());

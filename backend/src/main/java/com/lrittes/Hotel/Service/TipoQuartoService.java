@@ -9,14 +9,12 @@ import com.lrittes.Hotel.Repository.HotelRepository;
 import com.lrittes.Hotel.Repository.TipoQuartoRepository;
 import com.lrittes.Hotel.dto.TipoQuartoDTO;
 
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class TipoQuartoService {
 
     @Autowired
@@ -32,7 +30,7 @@ public class TipoQuartoService {
     }
 
     public Optional<TipoQuartoDTO> findById(Long id) {
-        return tipoQuartoRepository.findById(id)
+        return tipoQuartoRepository.findByTqid(id)
                 .map(this::convertToDTO);
     }
 
@@ -43,12 +41,12 @@ public class TipoQuartoService {
     }
 
     public TipoQuartoDTO update(Long id, TipoQuartoDTO tipoQuartoDTO) {
-        return tipoQuartoRepository.findById(id).map(existingTipoQuarto -> {
+        return tipoQuartoRepository.findByTqid(id).map(existingTipoQuarto -> {
             existingTipoQuarto.setPlano(tipoQuartoDTO.getPlano());
             existingTipoQuarto.setTipoQuarto(tipoQuartoDTO.getTipoQuarto());
             existingTipoQuarto.setPrecoNoite(tipoQuartoDTO.getPrecoNoite());
 
-            hotelRepository.findById(tipoQuartoDTO.getHotelId()).ifPresentOrElse(
+            hotelRepository.findByHid(tipoQuartoDTO.getHotelId()).ifPresentOrElse(
                 existingTipoQuarto::setHotel,
                 () -> { throw new RuntimeException("Hotel não encontrado com ID: " + tipoQuartoDTO.getHotelId()); }
             );
@@ -58,13 +56,14 @@ public class TipoQuartoService {
     }
 
     public void deleteById(Long id) {
-        tipoQuartoRepository.deleteById(id);
+        tipoQuartoRepository.deleteByTqid(id);
     }
 
     private TipoQuartoDTO convertToDTO(TipoQuarto tipoQuarto) {
         return new TipoQuartoDTO(
                 tipoQuarto.getId(),
-                tipoQuarto.getHotel().getId(), // Pega apenas o ID do Hotel
+                tipoQuarto.getTqid(),
+                tipoQuarto.getHotel().getHid(), // Pega apenas o ID do Hotel
                 tipoQuarto.getPlano(),
                 tipoQuarto.getTipoQuarto(),
                 tipoQuarto.getPrecoNoite()
@@ -76,7 +75,7 @@ public class TipoQuartoService {
         tipoQuarto.setId(tipoQuartoDTO.getId());
 
         // Busca a entidade Hotel a partir do ID
-        Hotel hotel = hotelRepository.findById(tipoQuartoDTO.getHotelId())
+        Hotel hotel = hotelRepository.findByHid(tipoQuartoDTO.getHotelId())
                 .orElseThrow(() -> new RuntimeException("Hotel não encontrado com ID: " + tipoQuartoDTO.getHotelId()));
         tipoQuarto.setHotel(hotel);
 

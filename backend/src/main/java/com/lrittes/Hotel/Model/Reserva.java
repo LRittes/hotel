@@ -1,70 +1,73 @@
 package com.lrittes.Hotel.Model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.time.temporal.ChronoUnit;
 
-@Entity
-@Table(name = "reserva")
+@Document(collection = "reservas")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reserva {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
+    
+    @NotBlank
+    @Indexed(unique = true)
+    private Long rid;
 
-    @Column(name = "data_reserva", nullable = false)
+    @NotNull
     private LocalDate dataReserva;
 
-    @Column(name = "data_checkin_prevista", nullable = false)
+    @NotNull
     private LocalDate dataCheckinPrevista;
 
-    @Column(name = "data_checkout_previsto", nullable = false)
+    @NotNull
     private LocalDate dataCheckoutPrevisto;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tipo_quarto_id", nullable = false)
-    @JsonBackReference
-    private TipoQuarto tipoQuarto;
+    private Long tipoQuartoId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quarto_id", nullable = false)
-    @JsonBackReference
-    private Quarto quarto;
+    private Long quartoId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id", nullable = false)
-    @JsonBackReference
-    private Hotel hotel;
+    private Long hotelId;
 
-    @Column(name = "cama_extra", nullable = false)
     private Boolean camaExtra = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_id", nullable = false)
-    @JsonBackReference
-    private Cliente cliente;
+    private Long clienteId; // Assumindo que você também converterá a entidade Cliente
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @NotNull
     private BigDecimal valor;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal valor_servicos_extra;
+    private BigDecimal valor_servicos_extra = BigDecimal.ZERO;
 
-    @Column(nullable = false, length = 20)
-    @Enumerated(EnumType.STRING)
+    @NotNull
     private StatusReserva status = StatusReserva.pendente;
 
-    @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @DBRef
     private Estadia estadia;
 
     public enum StatusReserva {
         confirmada, pendente, cancelada
     }
+
+    public long getQuantidadeDeDias() {
+        if (dataCheckinPrevista == null || dataCheckoutPrevisto == null || dataCheckoutPrevisto.isBefore(dataCheckinPrevista)) {
+            return 0;
+        }
+        
+        return ChronoUnit.DAYS.between(dataCheckinPrevista, dataCheckoutPrevisto);
+    }
+
+    public static final String SEQUENCE_NAME = "res_sequence";
 }

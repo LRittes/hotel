@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.lrittes.Hotel.exception.cliente.ClienteNotFoundException;
+import com.lrittes.Hotel.exception.cliente.ResourceConflictException;
 import com.lrittes.Hotel.exception.estadia.InsertEstadiaException;
 import com.lrittes.Hotel.exception.hotel.RangeOutRateException;
 import com.lrittes.Hotel.exception.reserva.DataCheckinBeforeCheckoutException;
@@ -28,6 +29,17 @@ public class GlobalExceptionHandler {
         body.put("message", exc.getMessage());
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ResourceConflictException.class)
+    public ResponseEntity<Object> handleResourceConflict(ResourceConflictException exc){
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT.value());
+        body.put("error", "Cliente com campo em conflito!");
+        body.put("message", exc.getMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InsertEstadiaException.class)
@@ -72,6 +84,7 @@ public class GlobalExceptionHandler {
         
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
+    
     @ExceptionHandler(RangeOutRateException.class)
     public ResponseEntity<Object> RangeOutException(RangeOutRateException exc) {
         Map<String, Object> body = new LinkedHashMap<>();

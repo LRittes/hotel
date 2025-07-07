@@ -57,7 +57,7 @@ const HotelInfoCard = ({ hotelData, onClick }) => {
         </div>
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-bold text-lg transition duration-300 cursor-pointer"
-          onClick={() => onClick(hotelData.id, hotelData)}
+          onClick={() => onClick(hotelData.hid, hotelData)}
         >
           Ver disponibilidade <i className="fas fa-chevron-right ml-2"></i>
         </button>

@@ -26,6 +26,20 @@ export default function RoomInfoCard({
   const { reservaData } = useContext(UserContext);
   const { user } = useContext(UserContext);
 
+  console.log({
+    imageUrl,
+    showOnMapLink,
+    hotelData,
+    andar,
+    numero,
+    hotel_id,
+    tipo_quarto_id,
+    plano,
+    preco_noite,
+    id,
+    tp_quarto,
+  });
+
   const [isChecked, setIsChecked] = useState(false);
   const [priceServices, setPriceServices] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -93,7 +107,7 @@ export default function RoomInfoCard({
     }
 
     try {
-      reservaDataToSave.clienteId = user.id;
+      reservaDataToSave.clienteId = user.clienteId;
       reservaDataToSave.valor_servicos_extra = priceServices;
 
       await api.post("/reservas", reservaDataToSave);

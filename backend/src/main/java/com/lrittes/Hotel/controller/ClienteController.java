@@ -1,7 +1,6 @@
 package com.lrittes.Hotel.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,12 +37,9 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteDTO> createCliente(@RequestBody ClienteDTO clienteDTO) {
-        try {
             ClienteDTO savedCliente = clienteService.save(clienteDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedCliente);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-        }
+            return ResponseEntity.ok(savedCliente);
+        
     }
 
     @PutMapping("/{id}")

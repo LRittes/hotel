@@ -2,16 +2,21 @@ package com.lrittes.Hotel.Repository;
 
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.lrittes.Hotel.Model.Cliente;
 
 
-@Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
-    @Query(value = "select * from cliente c where c.email = :email and c.password = :password", nativeQuery = true)
+@Repository
+public interface ClienteRepository extends MongoRepository<Cliente, String> {
+
+    Optional<Cliente> findByClienteId(Long cId);
+
+    void deleteByClienteId(Long cId);
+
+    @Query("{ 'email': ?0, 'password': ?1 }")
     Optional<Cliente> login(String email, String password);
 }

@@ -1,36 +1,38 @@
 package com.lrittes.Hotel.Model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
-@Entity
-@Table(name = "quarto", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"numero", "hotel_id"})
-})
+@Document(collection = "quartos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Quarto {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(nullable = false)
+    @NotBlank
+    @Indexed(unique = true)
+    private Long qid;
+
+    @NotNull(message = "O número do quarto é obrigatório")
     private Integer numero;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id", nullable = false)
-    @JsonBackReference
-    private Hotel hotel;
+    @NotNull(message = "O número do hotel é obrigatório")
+    private Long hotelId;
 
-    @Column(nullable = false)
+    @NotNull(message = "O andar é obrigatório")
     private Integer andar;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tipo_quarto_id", nullable = false)
-    @JsonBackReference
-    private TipoQuarto tipoQuarto;
+    @NotNull
+    private Long tipoQuartoId;
+
+    public static final String SEQUENCE_NAME = "qua_sequence";
 }

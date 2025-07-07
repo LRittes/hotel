@@ -5,16 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServicoEstadiaDTO {
-    private Long id;
+    private String id;
+    private Long seid;
     private Long estadiaId;
     private Long servicoExtraId;
-    private Timestamp dataHora;
+    private LocalDateTime dataHora;
     private Integer quantidade;
     private String descricao;
 }

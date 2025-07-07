@@ -1,40 +1,41 @@
 package com.lrittes.Hotel.Model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
-@Entity
-@Table(name = "estadia")
+@Document(collection = "estadias")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Estadia {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(name = "data_checkin", nullable = false)
+    @NotBlank
+    @Indexed(unique = true)
+    private Long eid;
+
+    @NotNull
     private LocalDate dataCheckin;
 
-    @Column(name = "data_checkout")
     private LocalDate dataCheckout;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_id", nullable = false)
-    @JsonBackReference
-    private Cliente cliente;
+    
+    private Long clienteId; 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quarto_id", nullable = false)
-    @JsonBackReference
-    private Quarto quarto;
+    
+    private Long quartoId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reserva_id", unique = true) 
-    @JsonBackReference
-    private Reserva reserva;
+    @Indexed(unique = true, background = true)
+    private Long reservaId;
+
+    public static final String SEQUENCE_NAME = "esta_sequence";
 }

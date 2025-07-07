@@ -12,7 +12,8 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServicoExtraDTO {
-    private Long id;
+    private String id;
+    private Long seid;
     private String descricao;
     private BigDecimal preco;
 }

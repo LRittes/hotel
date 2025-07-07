@@ -7,14 +7,12 @@ import com.lrittes.Hotel.Model.Empregado;
 import com.lrittes.Hotel.Repository.EmpregadoRepository;
 import com.lrittes.Hotel.dto.EmpregadoDTO;
 
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class EmpregadoService {
 
     @Autowired
@@ -27,7 +25,7 @@ public class EmpregadoService {
     }
 
     public Optional<EmpregadoDTO> findById(Long id) {
-        return empregadoRepository.findById(id)
+        return empregadoRepository.findByEid(id)
                 .map(this::convertToDTO);
     }
 
@@ -38,18 +36,18 @@ public class EmpregadoService {
     }
 
     public EmpregadoDTO update(Long id, EmpregadoDTO empregadoDTO) {
-        return empregadoRepository.findById(id).map(existingEmpregado -> {
+        return empregadoRepository.findByEid(id).map(existingEmpregado -> {
             existingEmpregado.setNome(empregadoDTO.getNome());
             return convertToDTO(empregadoRepository.save(existingEmpregado));
         }).orElseThrow(() -> new RuntimeException("Empregado não encontrado com ID: " + id));
     }
 
     public void deleteById(Long id) {
-        empregadoRepository.deleteById(id);
+        empregadoRepository.deleteByEid(id);
     }
 
     private EmpregadoDTO convertToDTO(Empregado empregado) {
-        return new EmpregadoDTO(empregado.getCpf(), empregado.getNome(), empregado.getEndereco(), empregado.getTelefone());
+        return new EmpregadoDTO( empregado.getCpf(), empregado.getEid(), empregado.getNome(), empregado.getEndereco(), empregado.getTelefone());
     }
 
     private Empregado convertToEntity(EmpregadoDTO empregadoDTO) {

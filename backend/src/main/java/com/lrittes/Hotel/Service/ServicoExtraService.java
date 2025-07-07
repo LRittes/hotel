@@ -7,14 +7,12 @@ import com.lrittes.Hotel.Model.ServicoExtra;
 import com.lrittes.Hotel.Repository.ServicoExtraRepository;
 import com.lrittes.Hotel.dto.ServicoExtraDTO;
 
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class ServicoExtraService {
 
     @Autowired
@@ -27,7 +25,7 @@ public class ServicoExtraService {
     }
 
     public Optional<ServicoExtraDTO> findById(Long id) {
-        return servicoExtraRepository.findById(id)
+        return servicoExtraRepository.findBySeid(id)
                 .map(this::convertToDTO);
     }
 
@@ -38,7 +36,7 @@ public class ServicoExtraService {
     }
 
     public ServicoExtraDTO update(Long id, ServicoExtraDTO servicoExtraDTO) {
-        return servicoExtraRepository.findById(id).map(existingServicoExtra -> {
+        return servicoExtraRepository.findBySeid(id).map(existingServicoExtra -> {
             existingServicoExtra.setDescricao(servicoExtraDTO.getDescricao());
             existingServicoExtra.setPreco(servicoExtraDTO.getPreco());
             return convertToDTO(servicoExtraRepository.save(existingServicoExtra));
@@ -46,11 +44,11 @@ public class ServicoExtraService {
     }
 
     public void deleteById(Long id) {
-        servicoExtraRepository.deleteById(id);
+        servicoExtraRepository.deleteBySeid(id);
     }
 
     private ServicoExtraDTO convertToDTO(ServicoExtra servicoExtra) {
-        return new ServicoExtraDTO(servicoExtra.getId(), servicoExtra.getDescricao(), servicoExtra.getPreco());
+        return new ServicoExtraDTO(servicoExtra.getId(), servicoExtra.getSeid(), servicoExtra.getDescricao(), servicoExtra.getPreco());
     }
 
     private ServicoExtra convertToEntity(ServicoExtraDTO servicoExtraDTO) {

@@ -1,50 +1,50 @@
 package com.lrittes.Hotel.Model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-@Entity
-@Table(name = "servico_estadia")
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+@Document(collection = "servicos_estadia")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServicoEstadia {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "estadia_id", nullable = false)
-    @JsonBackReference
-    private Estadia estadia;
+    @NotBlank
+    @Indexed(unique = true)
+    private Long seid;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "servico_extra_id")
-    @JsonBackReference
-    private ServicoExtra servicoExtra;
+    @NotNull
+    private Long estadiaId;
 
-    @Column(name = "data_hora", nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss a")  
-    private Timestamp dataHora;
+    @NotNull
+    private Long servicoExtraId;
 
-    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  
+    private LocalDateTime dataHora;
+
     private Integer quantidade = 1;
 
-    @Column(nullable = false)
     private String descricao;
 
-    @PrePersist
-    protected void onCreate() {
-        if (dataHora == null) {
-            dataHora = new Timestamp(System.currentTimeMillis());
-        }
-    }
+    public static final String SEQUENCE_NAME = "serEs_sequence";
 
+    // A lógica @PrePersist foi removida.
+    // Defina a data/hora na camada de serviço antes de salvar. Ex:
+    // if (servicoEstadia.getDataHora() == null) {
+    //     servicoEstadia.setDataHora(LocalDateTime.now());
+    // }
+    // servicoEstadiaRepository.save(servicoEstadia);
 }

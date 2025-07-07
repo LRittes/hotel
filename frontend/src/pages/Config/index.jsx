@@ -14,7 +14,9 @@ const ConfigPage = () => {
   const [reservas, setReservas] = useState([]);
 
   const getReservasByClienteId = async (id) => {
-    let response = await api.get(`/reservas/cr`, { params: { id: id } });
+    let response = await api.get(`/reservas/cr`, {
+      params: { clienteId: clienteId },
+    });
     setReservas(response.data);
   };
 
@@ -22,7 +24,7 @@ const ConfigPage = () => {
     if (user.email == "Convidado") {
       navigate("/");
     }
-    getReservasByClienteId(user.id);
+    getReservasByClienteId(user.clienteId);
   }, []);
 
   const goTo = (page) => setcurrentPage(page);

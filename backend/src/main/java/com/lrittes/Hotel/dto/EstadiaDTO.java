@@ -10,7 +10,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstadiaDTO {
-    private Long id;
+    private String id;
+    private Long eid;
     private LocalDate dataCheckin;
     private LocalDate dataCheckout;
     private Long clienteId;

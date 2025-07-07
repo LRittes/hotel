@@ -1,37 +1,50 @@
 package com.lrittes.Hotel.Model;
 
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-@Entity
-@Table(name = "cliente")
+@Document(collection = "cliente")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cliente {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+   @Id
+    private String id; // O ID no MongoDB é, por padrão, uma String (ObjectId)
 
-    @Column(nullable = false, unique = true, length = 11)
+    @NotBlank
+    @Indexed(unique = true)
+    private Long clienteId;
+
+    @NotBlank
+    @Size(min = 11, max = 11)
+    @Indexed(unique = true) // Cria um índice único para garantir que o CPF não se repita
     private String cpf;
 
-    @Column(nullable = false, length = 100)
+    @NotBlank
     private String nome;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @NotBlank
+    @Email // Validação de formato de email
+    @Indexed(unique = true) // Garante que o email seja único
     private String email;
 
-    @Column(nullable = false, length = 100)
+    @NotBlank
     private String password;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @NotBlank
     private String endereco;
 
-    @Column(length = 20)
     private String telefone;
+
+    public static final String SEQUENCE_NAME = "clientes_sequence";
 }
 

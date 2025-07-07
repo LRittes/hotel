@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import com.lrittes.Hotel.Service.ServicoEstadiaService;
 import com.lrittes.Hotel.dto.ServicoEstadiaDTO;
 
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
 @RestController
-@Transactional
 @CrossOrigin(origins = "http://localhost:8082")
 @RequestMapping("/api/servicos-estadia")
 public class ServicoEstadiaController {

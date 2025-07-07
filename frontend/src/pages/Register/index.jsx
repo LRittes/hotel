@@ -57,7 +57,7 @@ const RegisterPage = ({ register = true }) => {
     try {
       const response = register
         ? await api.post("/clientes", userData)
-        : await api.put(`/clientes/${user.id}`, userData);
+        : await api.put(`/clientes/${user.clienteId}`, userData);
       console.log(
         `Resposta da API (${register ? "Cadastro" : "Atualização"}):`,
         response.data

@@ -9,7 +9,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LimpezaDTO {
-    private Long id;
+    private String id;
+    private Long lid;
     private Long empregadoId;
     private Long quartoId;
     private LocalDate data;

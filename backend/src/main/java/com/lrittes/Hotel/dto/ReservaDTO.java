@@ -14,7 +14,8 @@ import com.lrittes.Hotel.Model.Reserva;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservaDTO {
-    private Long id;
+    private String id;
+    private Long rid;
     private LocalDate dataReserva;
     private LocalDate dataCheckinPrevista;
     private LocalDate dataCheckoutPrevisto;

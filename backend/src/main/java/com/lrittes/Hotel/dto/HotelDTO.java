@@ -8,7 +8,8 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HotelDTO {
-    private Long id;
+    private String id;
+    private Long hid;
     private String nome;
     private String endereco;
     private String telefone;

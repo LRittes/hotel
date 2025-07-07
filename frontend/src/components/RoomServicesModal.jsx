@@ -30,10 +30,10 @@ const RoomServicesModal = ({
 
   const handleServiceToggle = useCallback((service) => {
     setSelectedServices((prevSelected) => {
-      const isSelected = prevSelected.some((s) => s.id === service.id);
+      const isSelected = prevSelected.some((s) => s.id === service.seid);
       let newSelected;
       if (isSelected) {
-        newSelected = prevSelected.filter((s) => s.id !== service.id);
+        newSelected = prevSelected.filter((s) => s.id !== service.seid);
       } else {
         newSelected = [...prevSelected, service];
       }
@@ -89,7 +89,7 @@ const RoomServicesModal = ({
           {services.length > 0 ? (
             services.map((service) => (
               <div
-                key={service.id}
+                key={service.seid}
                 className="flex items-center justify-between py-3 border-b last:border-b-0"
               >
                 <div>
@@ -105,7 +105,9 @@ const RoomServicesModal = ({
                     type="checkbox"
                     value=""
                     className="sr-only peer"
-                    checked={selectedServices.some((s) => s.id === service.id)}
+                    checked={selectedServices.some(
+                      (s) => s.id === service.seid
+                    )}
                     onChange={() => handleServiceToggle(service)}
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>

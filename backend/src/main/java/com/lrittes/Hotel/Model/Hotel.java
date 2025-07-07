@@ -1,33 +1,37 @@
 package com.lrittes.Hotel.Model;
 
-import org.hibernate.validator.constraints.Range;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range; // Pode ser mantida para validação
 
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-
-@Entity
-@Table(name = "hotel")
+@Document(collection = "hoteis") // Mapeia para a coleção "hoteis"
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Hotel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id; // ID no MongoDB é uma String (ObjectId)
 
-    @Column(nullable = false, length = 100)
+    @NotBlank
+    @Indexed(unique = true)
+    private Long hid;
+
+    @NotBlank(message = "O nome não pode estar em branco")
     private String nome;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @NotBlank(message = "O endereço não pode estar em branco")
     private String endereco;
 
-    @Column(length = 20)
     private String telefone;
 
-    @Column
     @Range(min = 0, max = 10, message = "Nota deve estar entre 0 e 10")
     private Double nota;
+
+    public static final String SEQUENCE_NAME = "hot_sequence";
 }

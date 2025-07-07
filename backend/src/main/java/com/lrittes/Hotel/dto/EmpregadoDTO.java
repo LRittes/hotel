@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmpregadoDTO {
-    //private Long id;
     private String cpf;
+    private Long eid;
     private String nome;
     private String endereco;
     private String telefone;

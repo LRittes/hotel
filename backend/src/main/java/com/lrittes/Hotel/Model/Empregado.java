@@ -1,29 +1,43 @@
 package com.lrittes.Hotel.Model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-@Entity
-@Table(name = "empregado")
+@Document(collection = "empregado")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Empregado {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(nullable = false, length = 100)
+    @NotBlank
+    @Indexed(unique = true)
+    private Long eid;
+
+
+    @NotBlank
+    @Size(max = 100)
     private String nome;
-
-    @Column(nullable = false, unique = true, length = 11)
+    
+    @NotBlank
+    @Size(min = 11, max = 11)
+    @Indexed(unique = true)
     private String cpf;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+
+    @NotBlank
     private String endereco;
 
-    @Column(length = 20)
+    @Size(max = 20)
     private String telefone;
+
+    public static final String SEQUENCE_NAME = "emp_sequence";
 }

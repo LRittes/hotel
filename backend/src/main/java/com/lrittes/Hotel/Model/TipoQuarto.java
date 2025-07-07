@@ -1,40 +1,42 @@
 package com.lrittes.Hotel.Model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-@Entity
-@Table(name = "tipo_quarto")
+@Document(collection = "tipos_quarto")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TipoQuarto {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id", nullable = false)
+    @NotBlank
+    @Indexed(unique = true)
+    private Long tqid;
+
+    @DBRef
     @JsonBackReference
     private Hotel hotel;
 
-    @Column(nullable = false, length = 20)
-    @Enumerated(EnumType.STRING) // Garanta que isso está aqui
+    @NotNull
     private Plano plano;
 
-    @Column(name = "tp_quarto", nullable = false, length = 20)
-    @Enumerated(EnumType.STRING) // E isso também
+    @NotNull
     private TipoEnum tipoQuarto;
 
-    @Column(name = "preco_noite", nullable = false, precision = 10, scale = 2)
+    @NotNull
     private BigDecimal precoNoite;
 
     public enum Plano {
@@ -44,5 +46,6 @@ public class TipoQuarto {
     public enum TipoEnum {
         single, duplo, casal, suite_master
     }
-}
 
+    public static final String SEQUENCE_NAME = "tq_sequence";
+}

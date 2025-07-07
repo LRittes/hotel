@@ -24,6 +24,8 @@ function RoomPage() {
     getRoomsByHotelId(id);
   }, []);
 
+  console.log(rooms);
+
   return (
     <div className="flex flex-col min-h-screen w-screen">
       <Header />

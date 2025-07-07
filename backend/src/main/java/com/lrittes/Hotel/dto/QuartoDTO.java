@@ -8,7 +8,8 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuartoDTO {
-    private Long id;
+    private String id;
+    private Long qid;
     private Integer numero;
     private Long hotelId; 
     private Integer andar;

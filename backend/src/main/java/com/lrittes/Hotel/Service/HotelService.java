@@ -8,7 +8,6 @@ import com.lrittes.Hotel.Repository.HotelRepository;
 import com.lrittes.Hotel.dto.HotelDTO;
 import com.lrittes.Hotel.exception.hotel.RangeOutRateException;
 
-import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class HotelService {
 
     @Autowired
@@ -29,7 +27,7 @@ public class HotelService {
     }
 
     public Optional<HotelDTO> findById(Long id) {
-        return hotelRepository.findById(id)
+        return hotelRepository.findByHid(id)
                 .map(this::convertToDTO);
     }
 
@@ -48,20 +46,21 @@ public class HotelService {
     }
 
     public HotelDTO update(Long id, HotelDTO hotelDTO) {
-        return hotelRepository.findById(id).map(existingHotel -> {
+        return hotelRepository.findByHid(id).map(existingHotel -> {
             existingHotel.setNome(hotelDTO.getNome());
             existingHotel.setEndereco(hotelDTO.getEndereco());
             existingHotel.setTelefone(hotelDTO.getTelefone());
+            existingHotel.setNota(hotelDTO.getNota());
             return convertToDTO(hotelRepository.save(existingHotel));
         }).orElseThrow(() -> new RuntimeException("Hotel não encontrado com ID: " + id));
     }
 
     public void deleteById(Long id) {
-        hotelRepository.deleteById(id);
+        hotelRepository.deleteByHid(id);
     }
 
     private HotelDTO convertToDTO(Hotel hotel) {
-        return new HotelDTO(hotel.getId(), hotel.getNome(), hotel.getEndereco(), hotel.getTelefone(), hotel.getNota());
+        return new HotelDTO(hotel.getId(), hotel.getHid(), hotel.getNome(), hotel.getEndereco(), hotel.getTelefone(), hotel.getNota());
     }
 
     private Hotel convertToEntity(HotelDTO hotelDTO) {

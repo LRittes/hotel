@@ -1,17 +1,21 @@
 package com.lrittes.Hotel.Repository;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.lrittes.Hotel.Model.Quarto;
 
 @Repository
-public interface QuartoRepository extends JpaRepository<Quarto, Long> {
+public interface QuartoRepository extends MongoRepository<Quarto, String> {
 
-    @Query(value = "select * from roomByHotelId(:id)", nativeQuery = true)
-    List<Map<String, Object>> roomByHotelId(Long id);
+    @Query("{'hotelId': ?0}")
+    List<Quarto> roomByHotelId(Long id);
+
+    Optional<Quarto> findByQid(Long qId);
+
+    void deleteByQid(Long qId);
 }

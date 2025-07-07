@@ -13,7 +13,8 @@ import com.lrittes.Hotel.Model.TipoQuarto;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TipoQuartoDTO {
-    private Long id;
+    private String id;
+    private Long tqid;
     private Long hotelId; 
     private TipoQuarto.Plano plano;
     private TipoQuarto.TipoEnum tipoQuarto;
