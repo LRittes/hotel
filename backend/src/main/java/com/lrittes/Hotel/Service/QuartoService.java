@@ -9,6 +9,7 @@ import com.lrittes.Hotel.dto.QuartoDTO;
 import com.lrittes.Hotel.exception.cliente.ResourceConflictException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,8 +30,8 @@ public class QuartoService {
                 .map(this::convertToDTO);
     }
 
-    public List<QuartoDTO> findQuartoByHotelId(Long id) {
-        return quartoRepository.roomByHotelId(id).stream().map(this::convertToDTO).collect(Collectors.toList());
+    public List<Map<String, Object>> findQuartoByHotelId(Long id) {
+        return quartoRepository.roomByHotelId(id).stream().collect(Collectors.toList());
     }
 
     public QuartoDTO save(QuartoDTO quartoDTO) {

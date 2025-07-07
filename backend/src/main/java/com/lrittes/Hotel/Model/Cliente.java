@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class Cliente {
    @Id
-    private String id; // O ID no MongoDB é, por padrão, uma String (ObjectId)
+    private String id; 
 
     @NotBlank
     @Indexed(unique = true)
@@ -26,15 +26,15 @@ public class Cliente {
 
     @NotBlank
     @Size(min = 11, max = 11)
-    @Indexed(unique = true) // Cria um índice único para garantir que o CPF não se repita
+    @Indexed(unique = true) 
     private String cpf;
 
     @NotBlank
     private String nome;
 
     @NotBlank
-    @Email // Validação de formato de email
-    @Indexed(unique = true) // Garante que o email seja único
+    @Email 
+    @Indexed(unique = true) 
     private String email;
 
     @NotBlank

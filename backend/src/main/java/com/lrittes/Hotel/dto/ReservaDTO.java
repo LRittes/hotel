@@ -25,6 +25,6 @@ public class ReservaDTO {
     private Boolean camaExtra;
     private Long clienteId;
     private BigDecimal valor;
-    private BigDecimal valor_servicos_extra;
+    private BigDecimal valorServicosExtra;
     private Reserva.StatusReserva status;
 }

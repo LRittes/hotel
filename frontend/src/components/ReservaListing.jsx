@@ -9,10 +9,12 @@ const ReservaListing = ({ reservasData }) => {
     );
   }
 
+  console.log("Reser  list ", reservasData);
+
   return (
     <div className="space-y-6">
       {reservasData.map((reserva) => (
-        <ReservaCard key={reserva.id} {...reserva} />
+        <ReservaCard key={reserva.rid} {...reserva} />
       ))}
     </div>
   );

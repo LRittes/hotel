@@ -21,9 +21,7 @@ public class EmpregadoModelListener extends AbstractMongoEventListener<Empregado
     @Override
     public void onBeforeConvert(BeforeConvertEvent<Empregado> event) {
         Empregado empregado = event.getSource();
-        // Verifica se o campo cId ainda não foi preenchido
         if (empregado.getEid() == null) {
-            // Gera a sequência e a atribui ao campo cId
             empregado.setEid(sequenceGenerator.generateSequence(Empregado.SEQUENCE_NAME));
         }
     }

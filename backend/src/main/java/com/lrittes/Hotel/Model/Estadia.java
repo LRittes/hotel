@@ -26,14 +26,16 @@ public class Estadia {
     @NotNull
     private LocalDate dataCheckin;
 
+    @NotNull
     private LocalDate dataCheckout;
 
-    
+    @NotNull
     private Long clienteId; 
 
-    
+    @NotNull
     private Long quartoId;
 
+    @NotNull
     @Indexed(unique = true, background = true)
     private Long reservaId;
 

@@ -9,6 +9,7 @@ import com.lrittes.Hotel.Service.QuartoService;
 import com.lrittes.Hotel.dto.QuartoDTO;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8082")
@@ -25,8 +26,8 @@ public class QuartoController {
     }
 
     @GetMapping("/hid/{id}")
-    public ResponseEntity<List<QuartoDTO>> getAllQuartosByHotelId(@PathVariable Long id) {
-        List<QuartoDTO> quartos = quartoService.findQuartoByHotelId(id);
+    public ResponseEntity<List<Map<String, Object>>> getAllQuartosByHotelId(@PathVariable Long id) {
+        List<Map<String, Object>> quartos = quartoService.findQuartoByHotelId(id);
         return ResponseEntity.ok(quartos);
     }
 
@@ -43,7 +44,7 @@ public class QuartoController {
             QuartoDTO savedQuarto = quartoService.save(quartoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedQuarto);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null); // Exemplo de tratamento de erro para IDs inválidos
+            return ResponseEntity.badRequest().body(null); 
         }
     }
 

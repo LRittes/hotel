@@ -21,7 +21,7 @@ public class TipoQuartoService {
     private TipoQuartoRepository tipoQuartoRepository;
 
     @Autowired
-    private HotelRepository hotelRepository; // Necessário para buscar o Hotel
+    private HotelRepository hotelRepository; 
 
     public List<TipoQuartoDTO> findAll() {
         return tipoQuartoRepository.findAll().stream()
@@ -63,7 +63,7 @@ public class TipoQuartoService {
         return new TipoQuartoDTO(
                 tipoQuarto.getId(),
                 tipoQuarto.getTqid(),
-                tipoQuarto.getHotel().getHid(), // Pega apenas o ID do Hotel
+                tipoQuarto.getHotel().getHid(),
                 tipoQuarto.getPlano(),
                 tipoQuarto.getTipoQuarto(),
                 tipoQuarto.getPrecoNoite()
@@ -74,7 +74,6 @@ public class TipoQuartoService {
         TipoQuarto tipoQuarto = new TipoQuarto();
         tipoQuarto.setId(tipoQuartoDTO.getId());
 
-        // Busca a entidade Hotel a partir do ID
         Hotel hotel = hotelRepository.findByHid(tipoQuartoDTO.getHotelId())
                 .orElseThrow(() -> new RuntimeException("Hotel não encontrado com ID: " + tipoQuartoDTO.getHotelId()));
         tipoQuarto.setHotel(hotel);

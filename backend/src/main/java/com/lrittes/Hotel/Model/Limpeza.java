@@ -24,7 +24,7 @@ public class Limpeza {
     private Long lid;
 
     @NotNull
-    private Long empregadoId; // Assumindo que você também converterá a entidade Empregado
+    private Long empregadoId; 
 
     @NotNull
     private Long quartoId;

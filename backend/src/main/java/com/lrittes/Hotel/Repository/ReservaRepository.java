@@ -24,8 +24,8 @@ public interface ReservaRepository extends MongoRepository<Reserva, String> {
     @Query("{ " +
            "    'quartoId': ?0, " +
            "    'status': { '$in': ?1 }, " +
-           "    'dataCheckinPrevista': { '$lt': ?3 }, " + // Check-in existente < Check-out novo
-           "    'dataCheckoutPrevisto': { '$gt': ?2 } " +   // Check-out existente > Check-in novo
+           "    'dataCheckinPrevista': { '$lt': ?3 }, " + 
+           "    'dataCheckoutPrevisto': { '$gt': ?2 } " +
            "}")
     List<Reserva> findConflictingReservations(Long quartoId, List<String> status, LocalDate checkin, LocalDate checkout);
 

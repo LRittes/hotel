@@ -40,11 +40,4 @@ public class ServicoEstadia {
     private String descricao;
 
     public static final String SEQUENCE_NAME = "serEs_sequence";
-
-    // A lógica @PrePersist foi removida.
-    // Defina a data/hora na camada de serviço antes de salvar. Ex:
-    // if (servicoEstadia.getDataHora() == null) {
-    //     servicoEstadia.setDataHora(LocalDateTime.now());
-    // }
-    // servicoEstadiaRepository.save(servicoEstadia);
 }

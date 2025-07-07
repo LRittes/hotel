@@ -5,14 +5,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.lrittes.Hotel.Model.Empregado;
 import com.lrittes.Hotel.Model.Estadia;
+import com.lrittes.Hotel.Model.Limpeza;
 import com.lrittes.Hotel.Model.Quarto;
 import com.lrittes.Hotel.Model.Reserva;
 import com.lrittes.Hotel.Model.TipoQuarto;
-import com.lrittes.Hotel.Repository.EstadiaRepository;
-import com.lrittes.Hotel.Repository.QuartoRepository;
-import com.lrittes.Hotel.Repository.ReservaRepository;
-import com.lrittes.Hotel.Repository.TipoQuartoRepository;
+import com.lrittes.Hotel.Repository.*;
 import com.lrittes.Hotel.dto.ReservaDTO;
 import com.lrittes.Hotel.exception.reserva.DataCheckinBeforeCheckoutException;
 import com.lrittes.Hotel.exception.reserva.SameDataReservaException;
@@ -27,17 +26,25 @@ import java.util.stream.Collectors;
 @Service
 public class ReservaService {
 
+    
+    
     @Autowired
     private ReservaRepository reservaRepository;
-
+    
     @Autowired
     private QuartoRepository quartoRepository;
     
     @Autowired
     private TipoQuartoRepository tipoQuartoRepository;
-
+    
     @Autowired
     private EstadiaRepository estadiaRepository;
+    
+    @Autowired
+    private LimpezaRepository limpezaRepository;
+    
+    @Autowired
+    private EmpregadoRepository empregadoRepository;
 
     public List<ReservaDTO> findAll() {
         return reservaRepository.findAll().stream()
@@ -116,6 +123,11 @@ public class ReservaService {
                                 reserva.getClienteId(),
                                 reserva.getQuartoId(),
                                 reserva.getRid()));
+
+                List<Empregado> empregados = empregadoRepository.findAll();
+                Long empId = empregados.get((int) (Math.random() * empregados.size())).getEid();
+
+                limpezaRepository.save(new Limpeza(null, null, empId, reserva.getQuartoId(), LocalDate.now()));
             }
 
             return convertToDTO(reserva);
@@ -141,7 +153,7 @@ public class ReservaService {
             existingReserva.setDataCheckinPrevista(reservaDTO.getDataCheckinPrevista());
             existingReserva.setDataCheckoutPrevisto(reservaDTO.getDataCheckoutPrevisto());
             existingReserva.setCamaExtra(reservaDTO.getCamaExtra());
-            existingReserva.setValor_servicos_extra(reservaDTO.getValor_servicos_extra());
+            existingReserva.setValor_servicos_extra(reservaDTO.getValorServicosExtra());
             existingReserva.setStatus(reservaDTO.getStatus());
             existingReserva.setClienteId(reservaDTO.getClienteId());
             existingReserva.setQuartoId(reservaDTO.getQuartoId());
@@ -206,7 +218,7 @@ public class ReservaService {
         reserva.setDataCheckoutPrevisto(reservaDTO.getDataCheckoutPrevisto());
         reserva.setCamaExtra(reservaDTO.getCamaExtra());
         reserva.setValor(reservaDTO.getValor());
-        reserva.setValor_servicos_extra(reservaDTO.getValor_servicos_extra());
+        reserva.setValor_servicos_extra(reservaDTO.getValorServicosExtra());
         reserva.setStatus(reservaDTO.getStatus());
         reserva.setClienteId(reservaDTO.getClienteId());
         reserva.setQuartoId(reservaDTO.getQuartoId());

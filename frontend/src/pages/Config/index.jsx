@@ -15,7 +15,7 @@ const ConfigPage = () => {
 
   const getReservasByClienteId = async (id) => {
     let response = await api.get(`/reservas/cr`, {
-      params: { clienteId: clienteId },
+      params: { id: id },
     });
     setReservas(response.data);
   };

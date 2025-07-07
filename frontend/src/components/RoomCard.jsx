@@ -20,25 +20,11 @@ export default function RoomInfoCard({
   tipo_quarto_id,
   plano,
   preco_noite,
-  id,
+  qid,
   tp_quarto,
 }) {
   const { reservaData } = useContext(UserContext);
   const { user } = useContext(UserContext);
-
-  console.log({
-    imageUrl,
-    showOnMapLink,
-    hotelData,
-    andar,
-    numero,
-    hotel_id,
-    tipo_quarto_id,
-    plano,
-    preco_noite,
-    id,
-    tp_quarto,
-  });
 
   const [isChecked, setIsChecked] = useState(false);
   const [priceServices, setPriceServices] = useState(0);
@@ -47,7 +33,7 @@ export default function RoomInfoCard({
 
   let reservaDataToSave = {
     tipoQuartoId: tipo_quarto_id,
-    quartoId: id,
+    quartoId: qid,
     dataReserva: getFormattedCurrentDateYMD(),
     dataCheckinPrevista:
       reservaData != null ? formatDate(reservaData.checkIn) : "",
@@ -56,13 +42,13 @@ export default function RoomInfoCard({
     clienteId: null,
     hotelId: hotel_id,
     valor: 0,
-    valor_servicos_extra: 0,
+    valorServicosExtra: 0,
     camaExtra: isChecked,
     status: "pendente",
   };
 
   const roomData = {
-    id: id,
+    qid: qid,
     numero: numero,
     andar: andar,
     tipoQuarto: tp_quarto,
@@ -108,7 +94,7 @@ export default function RoomInfoCard({
 
     try {
       reservaDataToSave.clienteId = user.clienteId;
-      reservaDataToSave.valor_servicos_extra = priceServices;
+      reservaDataToSave.valorServicosExtra = priceServices;
 
       await api.post("/reservas", reservaDataToSave);
       console.log("Reserva salva: ", reservaDataToSave);
@@ -182,7 +168,10 @@ export default function RoomInfoCard({
           <div>
             <p className="text-gray-600 text-sm">diária</p>
             <p className="text-4xl font-bold text-gray-900">
-              R$ {preco_noite + priceServices}
+              R${" "}
+              {parseFloat(preco_noite + priceServices)
+                .toFixed(2)
+                .replace(".", ",")}
             </p>
             {tp_quarto != "single" && (
               <ToggleSwitch

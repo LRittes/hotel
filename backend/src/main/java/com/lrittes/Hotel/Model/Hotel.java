@@ -4,19 +4,19 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Range; // Pode ser mantida para validação
+import org.hibernate.validator.constraints.Range; 
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-@Document(collection = "hoteis") // Mapeia para a coleção "hoteis"
+@Document(collection = "hoteis") 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Hotel {
     @Id
-    private String id; // ID no MongoDB é uma String (ObjectId)
+    private String id; 
 
     @NotBlank
     @Indexed(unique = true)

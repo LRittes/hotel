@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import api from "../service/api";
 
 const ReservaCard = ({
-  id,
+  rid,
   dataReserva,
   dataCheckinPrevista,
   dataCheckoutPrevisto,
@@ -12,6 +12,7 @@ const ReservaCard = ({
   clienteId,
   camaExtra,
   valor,
+  valorServicosExtra,
   status,
 }) => {
   const [hotel, setHotel] = useState(null);
@@ -35,11 +36,12 @@ const ReservaCard = ({
         camaExtra,
         clienteId,
         valor,
+        valorServicosExtra,
         status: newStatus,
       };
 
       try {
-        const response = await api.put(`/reservas/${id}`, data);
+        const response = await api.put(`/reservas/${rid}`, data);
         console.log(`Reserva ${newStatus} com sucesso:`, response.data);
       } catch (err) {
         console.error(
@@ -52,7 +54,7 @@ const ReservaCard = ({
       }
     },
     [
-      id,
+      rid,
       dataReserva,
       dataCheckinPrevista,
       dataCheckoutPrevisto,
@@ -97,7 +99,7 @@ const ReservaCard = ({
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-4 border border-gray-200">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-2xl font-bold text-gray-900">Reserva #{id}</h3>
+        <h3 className="text-2xl font-bold text-gray-900">Reserva #{rid}</h3>
         <span
           className={`px-3 py-1 rounded-full text-sm font-semibold
             ${

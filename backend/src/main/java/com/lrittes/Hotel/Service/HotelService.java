@@ -39,7 +39,6 @@ public class HotelService {
         } catch (ConstraintViolationException e) {
             throw new RangeOutRateException(e.getMessage());
         } catch (Exception ex) {
-            // Captura outras exceções inesperadas durante o salvamento
             throw new RuntimeException("Ocorreu um erro inesperado ao salvar o hotel.", ex);
         }
         
@@ -65,7 +64,7 @@ public class HotelService {
 
     private Hotel convertToEntity(HotelDTO hotelDTO) {
         Hotel hotel = new Hotel();
-        hotel.setId(hotelDTO.getId()); // ID pode ser nulo para novas entidades
+        hotel.setId(hotelDTO.getId()); 
         hotel.setNome(hotelDTO.getNome());
         hotel.setEndereco(hotelDTO.getEndereco());
         hotel.setTelefone(hotelDTO.getTelefone());

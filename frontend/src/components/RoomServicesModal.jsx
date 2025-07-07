@@ -30,10 +30,10 @@ const RoomServicesModal = ({
 
   const handleServiceToggle = useCallback((service) => {
     setSelectedServices((prevSelected) => {
-      const isSelected = prevSelected.some((s) => s.id === service.seid);
+      const isSelected = prevSelected.some((s) => s.seid === service.seid);
       let newSelected;
       if (isSelected) {
-        newSelected = prevSelected.filter((s) => s.id !== service.seid);
+        newSelected = prevSelected.filter((s) => s.seid !== service.seid);
       } else {
         newSelected = [...prevSelected, service];
       }
@@ -50,6 +50,7 @@ const RoomServicesModal = ({
   }, [selectedServices, roomData]);
 
   if (!isOpen) return null;
+  console.log(selectedServices);
 
   return (
     <div
@@ -106,7 +107,7 @@ const RoomServicesModal = ({
                     value=""
                     className="sr-only peer"
                     checked={selectedServices.some(
-                      (s) => s.id === service.seid
+                      (s) => s.seid === service.seid
                     )}
                     onChange={() => handleServiceToggle(service)}
                   />

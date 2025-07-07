@@ -42,17 +42,6 @@ public class LimpezaService {
             existingLimpeza.setQuartoId(limpezaDTO.getQuartoId());
             existingLimpeza.setEmpregadoId(limpezaDTO.getEmpregadoId());
 
-
-            // empregadoRepository.findByEid(limpezaDTO.getEmpregadoId()).ifPresentOrElse(
-            //     existingLimpeza::setEmpregado,
-            //     () -> { throw new RuntimeException("Empregado não encontrado com ID: " + limpezaDTO.getEmpregadoId()); }
-            // );
-
-            // quartoRepository.findByQid(limpezaDTO.getQuartoId()).ifPresentOrElse(
-            //     existingLimpeza::setQuarto,
-            //     () -> { throw new RuntimeException("Quarto não encontrado com ID: " + limpezaDTO.getQuartoId()); }
-            // );
-
             return convertToDTO(limpezaRepository.save(existingLimpeza));
         }).orElseThrow(() -> new RuntimeException("Limpeza não encontrada com ID: " + id));
     }
@@ -77,15 +66,6 @@ public class LimpezaService {
         limpeza.setData(limpezaDTO.getData());
         limpeza.setQuartoId(limpezaDTO.getQuartoId());
         limpeza.setEmpregadoId(limpezaDTO.getEmpregadoId());
-
-
-        // Empregado empregado = empregadoRepository.findByEid(limpezaDTO.getEmpregadoId())
-        //         .orElseThrow(() -> new RuntimeException("Empregado não encontrado com ID: " + limpezaDTO.getEmpregadoId()));
-        // limpeza.setEmpregado(empregado);
-
-        // Quarto quarto = quartoRepository.findByQid(limpezaDTO.getQuartoId())
-        //         .orElseThrow(() -> new RuntimeException("Quarto não encontrado com ID: " + limpezaDTO.getQuartoId()));
-        // limpeza.setQuarto(quarto);
 
         return limpeza;
     }
