@@ -1,0 +1,31 @@
+# Versão do Docker Compose
+version: '3.8'
+
+# Definição dos serviços (contêineres)
+services:
+  # Nome do nosso serviço de banco de dados
+  mongodb:
+    # Usa a imagem oficial e mais recente do MongoDB
+    image: mongo:latest
+    # Nome do contêiner para fácil identificação
+    container_name: mongodb_container
+    # Define uma política de reinicialização para o contêiner
+    restart: unless-stopped
+    ports:
+      # Mapeia a porta 27017 do contêiner para a porta 27017 da sua máquina.
+      # Isso permite que você se conecte ao banco de dados a partir do seu "localhost".
+      - "27017:27017"
+    environment:
+      # Cria o usuário root inicial do banco de dados.
+      # !!! IMPORTANTE: Altere 'sua-senha-super-segura' para uma senha forte !!!
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      # Cria um volume nomeado para armazenar os dados do MongoDB.
+      # Isso garante que seus dados não sejam perdidos se o contêiner for removido.
+      - mongodb_data:/data/db
+
+# Definição do volume nomeado que será usado pelo serviço mongodb
+volumes:
+  mongodb_data:
+    driver: local
