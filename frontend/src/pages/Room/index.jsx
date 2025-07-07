@@ -14,28 +14,38 @@ function RoomPage() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getRoomsByHotelId = async (id) => {
-    let response = await api.get(`/quartos/hid/${id}`);
-    setRooms(response.data);
-    setLoading(false);
+  const getRoomsByHotelId = async (hotelId) => {
+    setLoading(true);
+    try {
+      console.log("Buscando quartos para o hotel ID:", hotelId);
+
+      const response = await api.get(`/quartos/hid/${hotelId}`);
+
+      console.log("Dados recebidos:", response.data);
+      setRooms(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar quartos:", error.response || error.message);
+      setRooms([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    getRoomsByHotelId(id);
-  }, []);
-
-  console.log(rooms);
+    // Garante que a busca só aconteça se o 'id' da URL existir
+    if (id) {
+      getRoomsByHotelId(id);
+    }
+  }, [id]); // Adicionado 'id' ao array de dependências
 
   return (
     <div className="flex flex-col min-h-screen w-screen">
       <Header />
-
       <NavHeader />
-
       <SearchBar />
 
       {loading ? (
-        <h1>Loading</h1>
+        <h1 className="text-center mt-10">Carregando...</h1>
       ) : rooms.length > 0 ? (
         <RoomListings roomsData={rooms} />
       ) : (
